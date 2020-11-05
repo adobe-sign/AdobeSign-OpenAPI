@@ -1,178 +1,801 @@
-
 {
-    "apiVersion":"6.0.0"
-    ,"swaggerVersion":"1.2"
-    ,"basePath":"/api/rest/v6"
-    ,"resourcePath":"/workflows"
-    ,"produces":
-    ["application/json"
-    ]
-    ,"apis":
-    [
-        {
-            "path":"/workflows"
-            ,"operations":
-            [
-                {
-                    "httpMethod":"GET"
-                    ,"summary":"Retrieves workflows for a user."
-                    ,"notes":null
-                    ,"type":"UserWorkflows"
-                    ,"nickname":"getWorkflows"
-                    ,"order":156
-                    ,"produces":
-                    ["application/json"
-                    ]
-                    ,"authorizations":
-                    {
-                        "oauth2":
-                        [
-                            {
-                                "scope":"workflow_read"
-                            }
-                        ]
-                    }
-                    ,"parameters":
-                    [
-                        {
-                            "name":"Authorization"
-                            ,"description":"An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token<\/a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('workflow_read')\" oncontextmenu=\"this.href=oauthDoc('workflow_read')\" target=\"oauthDoc\">workflow_read<\/a><\/li><\/ul>in the format <b>'Bearer {accessToken}'."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-api-user"
-                            ,"description":"The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.<\/b> If it is not specified, then the caller is inferred from the token."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"includeDraftWorkflows"
-                            ,"description":"Include draft workflows"
-                            ,"required":false
-                            ,"type":"boolean"
-                            ,"paramType":"query"
-                        }
-                        ,{
-                            "name":"includeInactiveWorkflows"
-                            ,"description":"Include inactive workflows"
-                            ,"required":false
-                            ,"type":"boolean"
-                            ,"paramType":"query"
-                        }
-                        ,{
-                            "name":"groupId"
-                            ,"description":"The group identifier for which the workflows will be fetched"
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"query"
-                        }
-                    ]
-                    ,"errorResponses":
-                    [
-                        {
-                            "code":"401"
-                            ,"reason":"INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"NO_AUTHORIZATION_HEADER: Authorization header not provided."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"PERMISSION_DENIED: The API caller does not have the permission to execute this operation."
-                        }
-                        ,{
-                            "code":"404"
-                            ,"reason":"INVALID_GROUP_ID: The Group ID specified is invalid."
-                        }
-                        ,{
-                            "code":"500"
-                            ,"reason":"MISC_SERVER_ERROR: Some miscellaneous error has occurred."
-                        }
-                    ]
-                }
+  "models": {
+    "WorkflowLibraryDocument": {
+      "id": "WorkflowLibraryDocument",
+      "properties": {
+        "templateTypes": {
+          "description": "A list of one or more library template types",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "DOCUMENT",
+              "FORM_FIELD_LAYER"
             ]
+          },
+          "required": true
+        },
+        "sharingMode": {
+          "description": "Specifies who should have access to this library document. GLOBAL sharing is a restricted operation.",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "USER",
+            "GROUP",
+            "ACCOUNT",
+            "GLOBAL"
+          ]
+        },
+        "modifiedDate": {
+          "format": "date",
+          "description": "The date on which the library document was last modified. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time",
+          "type": "string",
+          "required": true
+        },
+        "workflowLibDoc": {
+          "description": "An id of the workflow library document that can be provided as an input file in the custom workflow agreement creation request",
+          "type": "string",
+          "required": true
+        },
+        "label": {
+          "description": "A display text for this form for workflow users",
+          "type": "string",
+          "required": true
         }
-    ]
-    ,"models":
-    {
-        "UserWorkflows":
-        {
-            "id":"UserWorkflows"
-            ,"properties":
-            {
-                "userWorkflowList":
-                {
-                    "required":true
-                    ,"description":"An array of workflows"
-                    ,"type":"array"
-                    ,"items":
-                    {
-                        "$ref":"UserWorkflow"
-                    }
-                }
-            }
+      }
+    },
+    "LocaleFieldInfoDescription": {
+      "id": "LocaleFieldInfoDescription",
+      "properties": {
+        "visible": {
+          "description": "Whether current field is visible or not. If visible attribute for this field is false then this field should not be visible in the agreement creation UI using this workflow to user",
+          "type": "boolean",
+          "required": true
+        },
+        "defaultValue": {
+          "description": "default value of the field if input for this field is not provided and this field is required",
+          "type": "string",
+          "required": true
+        },
+        "editable": {
+          "description": "Whether current field can be edited. If editable attribute for this field is false then this field should not be provided in the agreement creation request and default value of this field will be used in agreement creation",
+          "type": "boolean",
+          "required": true
+        },
+        "required": {
+          "description": "Whether this field is required or optional",
+          "type": "boolean",
+          "required": true
+        },
+        "availableLocales": {
+          "description": "Which locales can be chosen for this workflow",
+          "type": "array",
+          "items": {
+            "$ref": "string"
+          },
+          "required": true
         }
-        ,"UserWorkflow":
-        {
-            "id":"UserWorkflow"
-            ,"properties":
-            {
-                "created":
-                {
-                    "required":true
-                    ,"description":"The date on which the workflow was created. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time"
-                    ,"type":"string"
-                    ,"format":"date"
-                }
-                ,"description":
-                {
-                    "required":true
-                    ,"description":"Description provided for this workflow at the time of its creation"
-                    ,"type":"string"
-                }
-                ,"displayName":
-                {
-                    "required":true
-                    ,"description":"The display name of the workflow."
-                    ,"type":"string"
-                }
-                ,"id":
-                {
-                    "required":true
-                    ,"description":"The unique identifier of a workflow"
-                    ,"type":"string"
-                }
-                ,"name":
-                {
-                    "required":true
-                    ,"description":"The name of the workflow."
-                    ,"type":"string"
-                }
-                ,"scope":
-                {
-                    "required":true
-                    ,"description":"The workflow scope (ACCOUNT or GROUP or OTHER)"
-                    ,"type":"string"
-                    ,"enum":["ACCOUNT","GROUP"]
-                }
-                ,"scopeId":
-                {
-                    "required":false
-                    ,"description":"Identifier of scope. Currently it is applicable for scope GROUP only and the value will be groupId."
-                    ,"type":"string"
-                }
-                ,"status":
-                {
-                    "required":true
-                    ,"description":"The workflow status (ACTIVE or DRAFT or INACTIVE or OTHER)"
-                    ,"type":"string"
-                    ,"enum":["ACTIVE","DRAFT","HIDDEN"]
-                }
-            }
+      }
+    },
+    "MergeFieldInfoDescription": {
+      "id": "MergeFieldInfoDescription",
+      "properties": {
+        "fieldName": {
+          "description": "Name of the custom field in this workflow",
+          "type": "string",
+          "required": true
+        },
+        "visible": {
+          "description": "Whether current field should be visible on agreement creation page. If visible attribute for this field is false then this field should not be shown on the agreement creation page using this workflow",
+          "type": "boolean",
+          "required": true
+        },
+        "defaultValue": {
+          "description": "default value of the field if input for this field is not provided and this field is required",
+          "type": "string",
+          "required": true
+        },
+        "displayName": {
+          "description": "The display text that can be shown for this custom field",
+          "type": "string",
+          "required": true
+        },
+        "editable": {
+          "description": "Whether current field can be edited. If editable attribute for this field is false then this field should not be provided in the agreement creation request and default value of this field will be used in agreement creation",
+          "type": "boolean",
+          "required": true
+        },
+        "required": {
+          "description": "Whether this field is required or optional",
+          "type": "boolean",
+          "required": true
         }
+      }
+    },
+    "RecipientsListInfoDescription": {
+      "id": "RecipientsListInfoDescription",
+      "properties": {
+        "allowSender": {
+          "description": "whether sender is allowed as a recipient",
+          "type": "boolean",
+          "required": true
+        },
+        "minListCount": {
+          "description": "minimum number of entries allowed in the current recipient list",
+          "type": "int",
+          "required": true
+        },
+        "visible": {
+          "description": "Whether current field is visible. If visible attribute for this field is false then this field should not be shown in the agreement creation UI using this workflow to user",
+          "type": "boolean",
+          "required": true
+        },
+        "authenticationMethod": {
+          "description": "authentication method for the current recipient list to have access to view and sign the document",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "NONE",
+            "KBA",
+            "PASSWORD",
+            "WEB_IDENTITY"
+          ]
+        },
+        "allowfax": {
+          "description": "whether fax is allowed or not",
+          "type": "boolean",
+          "required": true
+        },
+        "defaultValue": {
+          "description": "A default  email or fax number",
+          "type": "string",
+          "required": true
+        },
+        "editable": {
+          "description": "Whether current field can be edited. If editable attribute for this field is false then this field should not be provided in the agreement creation request and default value of this field will be used in agreement creation",
+          "type": "boolean",
+          "required": true
+        },
+        "name": {
+          "description": "Name of the current RecipientInfo list",
+          "type": "string",
+          "required": true
+        },
+        "maxListCount": {
+          "description": "maximum number of entries allowed in the current recipient list",
+          "type": "int",
+          "required": true
+        },
+        "label": {
+          "description": "A display text for the workflow user that can be used for the current recipients list",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "UserWorkflows": {
+      "id": "UserWorkflows",
+      "properties": {
+        "userWorkflowList": {
+          "description": "An array of workflows",
+          "type": "array",
+          "items": {
+            "$ref": "UserWorkflow"
+          },
+          "required": true
+        }
+      }
+    },
+    "ExpirationFieldInfoDescription": {
+      "id": "ExpirationFieldInfoDescription",
+      "properties": {
+        "maxDays": {
+          "description": "Maximum number of days for agreement expiration",
+          "type": "integer",
+          "required": true
+        },
+        "visible": {
+          "description": "Whether current field is visible or not. If visible attribute for this field is false then this field should not be visible in the agreement creation UI using this workflow to user",
+          "type": "boolean",
+          "required": true
+        },
+        "defaultValue": {
+          "description": "default value of the field if input for this field is not provided and this field is required",
+          "type": "string",
+          "required": true
+        },
+        "editable": {
+          "description": "Whether current field can be edited. If editable attribute for this field is false then this field should not be provided in the agreement creation request and default value of this field will be used in agreement creation",
+          "type": "boolean",
+          "required": true
+        },
+        "required": {
+          "description": "Whether this field is required or optional",
+          "type": "boolean",
+          "required": true
+        }
+      }
+    },
+    "WorkflowDescription": {
+      "id": "WorkflowDescription",
+      "properties": {
+        "scopeId": {
+          "description": "Identifier of scope. Currently it is applicable for scope GROUP only and the value will be groupId.",
+          "type": "string",
+          "required": false
+        },
+        "messageInfo": {
+          "description": "Information about message field in DocumentCreationInfo input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "WorkflowDefaultParams",
+          "items": {
+            "$ref": "WorkflowDefaultParams"
+          },
+          "required": true
+        },
+        "created": {
+          "description": "The day on which the workflow was created",
+          "type": "date",
+          "required": true
+        },
+        "displayName": {
+          "description": "The display name of the workflow.",
+          "type": "string",
+          "required": true
+        },
+        "description": {
+          "description": "Description provided for this workflow at the time of its creation",
+          "type": "string",
+          "required": true
+        },
+        "mergeFieldsInfo": {
+          "description": "Information about customFieldInfos in DocumentCreationInfo input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "array",
+          "items": {
+            "$ref": "MergeFieldInfoDescription"
+          },
+          "required": true
+        },
+        "agreementNameInfo": {
+          "description": "Information about name field in DocumentCreationInfo input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "WorkflowDefaultParams",
+          "items": {
+            "$ref": "WorkflowDefaultParams"
+          },
+          "required": true
+        },
+        "passwordInfo": {
+          "description": "Information about openPassword field in SecurityOptions input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "PasswordFieldInfoDescription",
+          "items": {
+            "$ref": "PasswordFieldInfoDescription"
+          },
+          "required": true
+        },
+        "authoringInfo": {
+          "description": "Information about authoringRequested field in SendDocumentInteractiveOptions input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "WorkflowDefaultParams",
+          "items": {
+            "$ref": "WorkflowDefaultParams"
+          },
+          "required": true
+        },
+        "recipientsListInfo": {
+          "description": "Information about RecepientsInfo input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "array",
+          "items": {
+            "$ref": "RecipientsListInfoDescription"
+          },
+          "required": true
+        },
+        "scope": {
+          "description": "The workflow scope (ACCOUNT or GROUP or OTHER)",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "ACCOUNT",
+            "GROUP"
+          ]
+        },
+        "expirationInfo": {
+          "description": "Information about daysUntilSigningDeadline field in DocumentCreationInfo input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "ExpirationFieldInfoDescription",
+          "items": {
+            "$ref": "ExpirationFieldInfoDescription"
+          },
+          "required": true
+        },
+        "name": {
+          "description": "The name of the workflow.",
+          "type": "string",
+          "required": true
+        },
+        "modified": {
+          "description": "The day on which the workflow was last modified",
+          "type": "date",
+          "required": true
+        },
+        "fileInfos": {
+          "description": "Information about FileInfo input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "array",
+          "items": {
+            "$ref": "FileInfosDescription"
+          },
+          "required": true
+        },
+        "localeInfo": {
+          "description": "Information about locale  field in DocumentCreationInfo input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "LocaleFieldInfoDescription",
+          "items": {
+            "$ref": "LocaleFieldInfoDescription"
+          },
+          "required": true
+        },
+        "ccsListInfo": {
+          "description": "Information about CCList input field in the agreement creation request when using the API which creates an agreement in a workflow",
+          "type": "array",
+          "items": {
+            "$ref": "CCsListInfoDescription"
+          },
+          "required": true
+        },
+        "status": {
+          "description": "The workflow status (ACTIVE or DRAFT or INACTIVE or OTHER)",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "ACTIVE",
+            "DRAFT",
+            "HIDDEN"
+          ]
+        }
+      }
+    },
+    "CCsListInfoDescription": {
+      "id": "CCsListInfoDescription",
+      "properties": {
+        "minListCount": {
+          "description": "minimum number of entries allowed in the current CC list",
+          "type": "integer",
+          "required": true
+        },
+        "visible": {
+          "description": "Whether current field is visible or not. If visible attribute for this field is false then this field should not be shown in the agreement creation page using this workflow",
+          "type": "boolean",
+          "required": true
+        },
+        "editable": {
+          "description": "Whether current field can be edited. If editable attribute for this field is false then this field should not be provided in the agreement creation request and default value of this field will be used in agreement creation",
+          "type": "boolean",
+          "required": true
+        },
+        "name": {
+          "description": "Name of the current CC list",
+          "type": "string",
+          "required": true
+        },
+        "defaultValues": {
+          "description": "An array of default emails that will be used if no input is provided for this list element.",
+          "type": "array",
+          "items": {
+            "$ref": "string"
+          },
+          "required": true
+        },
+        "maxListCount": {
+          "description": "maximum number of entries allowed in the current CC list",
+          "type": "integer",
+          "required": true
+        },
+        "label": {
+          "description": "A display text for the workflow user that can be used for the current CC list",
+          "type": "string",
+          "required": true
+        },
+        "required": {
+          "description": "Whether this field is required or optional",
+          "type": "boolean",
+          "required": true
+        }
+      }
+    },
+    "UserWorkflow": {
+      "id": "UserWorkflow",
+      "properties": {
+        "scopeId": {
+          "description": "Identifier of scope. Currently it is applicable for scope GROUP only and the value will be groupId.",
+          "type": "string",
+          "required": false
+        },
+        "created": {
+          "format": "date",
+          "description": "The date on which the workflow was created. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time",
+          "type": "string",
+          "required": true
+        },
+        "displayName": {
+          "description": "The display name of the workflow.",
+          "type": "string",
+          "required": true
+        },
+        "scope": {
+          "description": "The workflow scope (ACCOUNT or GROUP or OTHER)",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "ACCOUNT",
+            "GROUP"
+          ]
+        },
+        "name": {
+          "description": "The name of the workflow.",
+          "type": "string",
+          "required": true
+        },
+        "description": {
+          "description": "Description provided for this workflow at the time of its creation",
+          "type": "string",
+          "required": true
+        },
+        "id": {
+          "description": "The unique identifier of a workflow",
+          "type": "string",
+          "required": true
+        },
+        "status": {
+          "description": "The workflow status (ACTIVE or DRAFT or INACTIVE or OTHER)",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "ACTIVE",
+            "DRAFT",
+            "HIDDEN"
+          ]
+        }
+      }
+    },
+    "WorkflowDefaultParams": {
+      "id": "WorkflowDefaultParams",
+      "properties": {
+        "visible": {
+          "description": "Whether current field is visible or not. If visible attribute for this field is false then this field should not be visible in the agreement creation UI using this workflow to user",
+          "type": "boolean",
+          "required": true
+        },
+        "defaultValue": {
+          "description": "default value of the field if input for this field is not provided and this field is required",
+          "type": "string",
+          "required": true
+        },
+        "editable": {
+          "description": "Whether current field can be edited. If editable attribute for this field is false then this field should not be provided in the agreement creation request and default value of this field will be used in agreement creation",
+          "type": "boolean",
+          "required": true
+        },
+        "required": {
+          "description": "Whether this field is required or optional",
+          "type": "boolean",
+          "required": true
+        }
+      }
+    },
+    "PasswordFieldInfoDescription": {
+      "id": "PasswordFieldInfoDescription",
+      "properties": {
+        "visible": {
+          "description": "Whether password info field is visible on agreement creation page",
+          "type": "boolean",
+          "required": true
+        },
+        "defaultValue": {
+          "description": "Default value of the password info field",
+          "type": "string",
+          "required": true
+        },
+        "editable": {
+          "description": "Default value of the password info field",
+          "type": "boolean",
+          "required": true
+        },
+        "name": {
+          "description": "Name of password field",
+          "type": "string",
+          "required": true
+        },
+        "label": {
+          "description": "Label of password field",
+          "type": "string",
+          "required": true
+        },
+        "required": {
+          "description": "Whether this field is required or optional",
+          "type": "boolean",
+          "required": true
+        }
+      }
+    },
+    "FileInfosDescription": {
+      "id": "FileInfosDescription",
+      "properties": {
+        "name": {
+          "description": "Name of the fileInfo element",
+          "type": "string",
+          "required": true
+        },
+        "workflowLibraryDocumentSelectorList": {
+          "description": "A list of workflow library documents out of which one workflow library document can be selected with this fileInfo object",
+          "type": "array",
+          "items": {
+            "$ref": "WorkflowLibraryDocument"
+          },
+          "required": true
+        },
+        "label": {
+          "description": "Display label of this field for external users",
+          "type": "string",
+          "required": true
+        },
+        "required": {
+          "description": "Whether this field is required or optional",
+          "type": "boolean",
+          "required": true
+        }
+      }
     }
+  },
+  "apiVersion": "6.0.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://secure.au1.echosign.com/api/rest/v6",
+  "apis": [
+    {
+      "path": "/workflows",
+      "operations": [
+        {
+          "summary": "Retrieves workflows for a user.",
+          "notes": null,
+          "nickname": "getWorkflows",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "workflow_read"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "BAD_REQUEST: The request provided is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ARGUMENTS: One or more arguments to the method are invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_JSON: An invalid JSON was specified.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER_HEADER: Value provided in x-on-behalf-Of-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_USER: Invalid user ID or email provided in x-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_AUTHORIZATION_HEADER: Authorization header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "UNAUTHORIZED: You cannot work on behalf of this user.",
+              "code": "401"
+            },
+            {
+              "reason": "API_TERMS_NOT_ACCEPTED: Your account is locked because an administrator has not agreed to Adobe Sign's Terms of Use. Please contact your account administrator to activate your account.",
+              "code": "403"
+            },
+            {
+              "reason": "PERMISSION_DENIED: The API caller does not have the permission to execute this operation.",
+              "code": "403"
+            },
+            {
+              "reason": "INVALID_GROUP_ID: The Group ID specified is invalid.",
+              "code": "404"
+            },
+            {
+              "reason": "NOT_FOUND: Resource not found.",
+              "code": "404"
+            },
+            {
+              "reason": "MISC_SERVER_ERROR: Some miscellaneous error has occurred.",
+              "code": "500"
+            }
+          ],
+          "httpMethod": "GET",
+          "type": "UserWorkflows",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('workflow_read')\" oncontextmenu=\"this.href=oauthDoc('workflow_read')\" target=\"oauthDoc\">workflow_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "x-on-behalf-of-user",
+              "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "groupId",
+              "description": "The group identifier for which the workflows will be fetched",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "includeDraftWorkflows",
+              "description": "Include draft workflows",
+              "type": "boolean",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "includeInactiveWorkflows",
+              "description": "Include inactive workflows",
+              "type": "boolean",
+              "required": false
+            }
+          ],
+          "order": 184
+        }
+      ]
+    },
+    {
+      "path": "/workflows/{workflowId}",
+      "operations": [
+        {
+          "summary": "Retrieves the details of a workflow.",
+          "notes": null,
+          "nickname": "getWorkflowInfo",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "workflow_read"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "BAD_REQUEST: The request provided is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_JSON: An invalid JSON was specified.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER_HEADER: Value provided in x-on-behalf-Of-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_USER: Invalid user ID or email provided in x-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_AUTHORIZATION_HEADER: Authorization header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "DISABLED_WORKFLOW: The workflow is in HIDDEN/DRAFT state.",
+              "code": "403"
+            },
+            {
+              "reason": "PERMISSION_DENIED: The API caller does not have the permission to execute this operation.",
+              "code": "403"
+            },
+            {
+              "reason": "INVALID_GROUP_ID: The Group ID specified is invalid.",
+              "code": "404"
+            },
+            {
+              "reason": "INVALID_WORKFLOW_ID: The Workflow ID specified is invalid.",
+              "code": "404"
+            },
+            {
+              "reason": "NOT_FOUND: Resource not found.",
+              "code": "404"
+            },
+            {
+              "reason": "INVALID_GROUP_ID_FOR_USER: Specified group is invalid or user is not a member.",
+              "code": "405"
+            }
+          ],
+          "httpMethod": "GET",
+          "type": "WorkflowDescription",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('workflow_read')\" oncontextmenu=\"this.href=oauthDoc('workflow_read')\" target=\"oauthDoc\">workflow_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "x-on-behalf-of-user",
+              "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "path",
+              "name": "workflowId",
+              "description": "The workflow identifier, as retrieved from the API to fetch workflows.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "groupId",
+              "description": "The group identifier, as returned by the group creation API or retrieved from the API to fetch groups.",
+              "type": "string",
+              "required": false
+            }
+          ],
+          "order": 185
+        }
+      ]
+    }
+  ],
+  "resourcePath": "/workflows",
+  "produces": [
+    "application/json"
+  ]
 }
