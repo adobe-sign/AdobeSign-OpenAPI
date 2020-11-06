@@ -1,0 +1,151 @@
+{
+  "models": {
+    "Account": {
+      "description": "Account resource for the User",
+      "id": "Account",
+      "properties": {
+        "created": {
+          "format": "date",
+          "description": "Date when the account was created. This is a server generated attributed and can not be provided in POST/PUT calls. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time",
+          "type": "date",
+          "required": false
+        },
+        "accountType": {
+          "description": "The provisioned type of the account. This is a server generated attributed and can not be provided in POST/PUT calls.",
+          "type": "string",
+          "required": false,
+          "enum": [
+            "FREE",
+            "FREE_LEGACY",
+            "TEAM_TRIAL",
+            "TEAM",
+            "TEAM_LEGACY",
+            "ENTERPRISE_TRIAL",
+            "ENTERPRISE",
+            "ENTERPRISE_LEGACY",
+            "GLOBAL_TRIAL",
+            "GLOBAL",
+            "DEVELOPER",
+            "PRO_DOC_CLOUD",
+            "TEAM_DOC_CLOUD",
+            "TRIAL_EXPIRED",
+            "ANONYMOUS",
+            "PRO_DOC_CLOUD_MULTI",
+            "PRO_PLUS_DOC_CLOUD",
+            "PRO_PLUS_DOC_CLOUD_MULTI"
+          ]
+        },
+        "name": {
+          "description": "The name which the account is known. This is a server generated attributed and can not be provided in POST/PUT calls. ",
+          "type": "string",
+          "required": false
+        },
+        "modified": {
+          "format": "date",
+          "description": "The last date that the account information was updated. This is a server generated attributed and can not be provided in POST/PUT calls. Format would be yyyy-MM-dd'T'HH:mm:ssZ. For example, e.g 2016-02-25T18:46:19Z represents UTC time",
+          "type": "date",
+          "required": false
+        },
+        "company": {
+          "description": "The company associated with the account. This is a server generated attributed and can not be provided in POST/PUT calls. ",
+          "type": "string",
+          "required": false
+        },
+        "id": {
+          "description": "Identifier of the account. This is a server generated attributed and can not be provided in POST/PUT calls. ",
+          "type": "string",
+          "required": false
+        }
+      }
+    }
+  },
+  "apiVersion": "6.0.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://secure.au1.echosign.com/api/rest/v6",
+  "apis": [
+    {
+      "path": "/accounts/{accountId}",
+      "operations": [
+        {
+          "summary": "Retrieves the information for an account.",
+          "notes": null,
+          "nickname": "getAccount",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "user_read"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER_HEADER: Value provided in x-on-behalf-Of-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_USER: Invalid user ID or email provided in x-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_AUTHORIZATION_HEADER: Authorization header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "PERMISSION_DENIED: The API caller does not have the permission to execute this operation.",
+              "code": "403"
+            },
+            {
+              "reason": "MISC_SERVER_ERROR: Some miscellaneous error has occurred.",
+              "code": "500"
+            }
+          ],
+          "httpMethod": "GET",
+          "type": "Account",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('user_read')\" oncontextmenu=\"this.href=oauthDoc('user_read')\" target=\"oauthDoc\">user_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "path",
+              "name": "accountId",
+              "description": "The account identifier.",
+              "type": "string",
+              "required": true
+            }
+          ],
+          "order": 35
+        }
+      ]
+    }
+  ],
+  "resourcePath": "/accounts",
+  "produces": [
+    "application/json"
+  ]
+}
