@@ -1,1195 +1,1222 @@
-
 {
-    "apiVersion":"6.0.0"
-    ,"swaggerVersion":"1.2"
-    ,"basePath":"/api/rest/v6"
-    ,"resourcePath":"/webhooks"
-    ,"produces":
-    ["application/json"
-    ]
-    ,"apis":
-    [
-        {
-            "path":"/webhooks"
-            ,"operations":
-            [
-                {
-                    "httpMethod":"POST"
-                    ,"summary":"Creates a webhook."
-                    ,"notes":null
-                    ,"type":"WebhookCreationResponse"
-                    ,"nickname":"createWebhook"
-                    ,"order":140
-                    ,"produces":
-                    ["application/json"
-                    ]
-                    ,"authorizations":
-                    {
-                        "oauth2":
-                        [
-                            {
-                                "scope":"webhook_write"
-                            }
-                        ]
-                    }
-                    ,"parameters":
-                    [
-                        {
-                            "name":"Authorization"
-                            ,"description":"An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token<\/a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_write')\" oncontextmenu=\"this.href=oauthDoc('webhook_write')\" target=\"oauthDoc\">webhook_write<\/a><\/li><\/ul>in the format <b>'Bearer {accessToken}'."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-api-user"
-                            ,"description":"The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.<\/b> If it is not specified, then the caller is inferred from the token."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-on-behalf-of-user"
-                            ,"description":"The userId or email in the format <b>userid:{userId} OR email:{email}.<\/b> of the user that has shared his/her account"
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"WebhookInfo"
-                            ,"description":"Information about the webhook that you want to create"
-                            ,"required":true
-                            ,"type":"WebhookInfo"
-                            ,"paramType":"body"
-                        }
-                    ]
-                    ,"errorResponses":
-                    [
-                        {
-                            "code":"400"
-                            ,"reason":"BAD_REQUEST: The request provided is invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"DUPLICATE_WEBHOOK_CONFIGURATION: There is already a webhook registered with same configuration."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_ARGUMENTS: One or more arguments to the method are invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_JSON: An invalid JSON was specified."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_WEBHOOK_CONDITIONAL_PARAMS: The webhook conditional parameters specified are invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_WEBHOOK_RESOURCE_ID: The resource id specified is invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_WEBHOOK_RESOURCE_TYPE: The resource type specified is invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_WEBHOOK_STATE: The webhook state specified is invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_WEBHOOK_SUBSCRIPTION_EVENTS: One or more webhook subscription events specified is invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_WEBHOOK_URL: The webhook url specified is invalid. Please provide a well-formatted https based url."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"MISSING_REQUIRED_PARAM: Required parameters are missing."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"WEBHOOK_LIMIT_EXCEEDED: Webhook limit for this resource and event has exceeded."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_USER: Invalid user ID or email provided in x-user header."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"NO_AUTHORIZATION_HEADER: Authorization header not provided."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"UNAUTHORIZED: You cannot work on behalf of this user."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"UNVERIFIED_USER: The user has registered but has not verified their email address. The user must use the Adobe Sign web site to complete verification."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"API_TERMS_NOT_ACCEPTED: Your account is locked because an administrator has not agreed to Adobe Sign's Terms of Use. Please contact your account administrator to activate your account."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"PERMISSION_DENIED: The API caller does not have the permission to execute this operation."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"WEBHOOK_CREATION_NOT_ALLOWED: Webhook creation is not allowed."
-                        }
-                        ,{
-                            "code":"500"
-                            ,"reason":"MISC_SERVER_ERROR: Some miscellaneous error has occurred."
-                        }
-                    ]
-                }
+  "models": {
+    "PageInfo": {
+      "id": "PageInfo",
+      "properties": {
+        "nextCursor": {
+          "description": "Used to navigate to the next page. If not returned, there are no further pages.",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "WebhookAgreementEvents": {
+      "id": "WebhookAgreementEvents",
+      "properties": {
+        "includeDetailedInfo": {
+          "description": "Determines whether agreement detailed info will be returned in the response payload",
+          "type": "boolean",
+          "required": false
+        },
+        "includeParticipantsInfo": {
+          "description": "Determines whether participants info will be returned in the response payload",
+          "type": "boolean",
+          "required": false
+        },
+        "includeSignedDocuments": {
+          "description": "Determines whether documents will be returned in webhook response payload. If set to true, signed document will be returned in base 64 encoded format in JSON when signing is complete",
+          "type": "boolean",
+          "required": false
+        },
+        "includeDocumentsInfo": {
+          "description": "Determines whether document info will be returned in the response payload",
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "WebhookMegaSignEvents": {
+      "id": "WebhookMegaSignEvents",
+      "properties": {
+        "includeDetailedInfo": {
+          "description": "Determines whether megaign detailed info will be returned in the response payload",
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "WebhookInfo": {
+      "id": "WebhookInfo",
+      "properties": {
+        "resourceId": {
+          "description": "Id of the resource type for which you want to create webhook. Provide agreementId if webhook needs to be created for an agreement. Similarly, widgetId if webhook needs to be created for a web form, megaSignId if webhook needs to be created for a megaSign and libraryDocumentId if webhook needs to be created for a library document. Need to specify only if scope is 'RESOURCE'. Can't be modified in PUT request",
+          "type": "string",
+          "required": false
+        },
+        "webhookUrlInfo": {
+          "description": "Info of webhook url",
+          "type": "WebhookUrlInfo",
+          "items": {
+            "$ref": "WebhookUrlInfo"
+          },
+          "required": true
+        },
+        "webhookConditionalParams": {
+          "description": "Conditions which webhook creator can specify for the payload while creating or updating a webhook",
+          "type": "WebhookConditionalParams",
+          "items": {
+            "$ref": "WebhookConditionalParams"
+          },
+          "required": false
+        },
+        "created": {
+          "format": "date",
+          "description": "Timestamp when the webhook was created. Will only be returned in GET request. Can't be modified in PUT request",
+          "type": "string",
+          "required": false
+        },
+        "webhookSubscriptionEvents": {
+          "description": "Determines events for which the webhook is triggered. The possible values are <br> AGREEMENT_CREATED : When an agreement is created <br>,\nAGREEMENT_ACTION_DELEGATED : When an agreement is delegated <br>,\nAGREEMENT_RECALLED : When an agreement is recalled <br>,\nAGREEMENT_REJECTED : When an agreement is rejected <br>,\nAGREEMENT_EXPIRED : When an agreement expires <br>,\nAGREEMENT_ACTION_COMPLETED : When an agreement action is completed <br>,\nAGREEMENT_WORKFLOW_COMPLETED : When an agreement workflow is completed <br>,\nAGREEMENT_EMAIL_VIEWED : When an agreement's email is viewed <br>,\nAGREEMENT_MODIFIED : When an agreement is modified <br>,\nAGREEMENT_SHARED : When an agreement is shared <br>,\nAGREEMENT_READY_TO_VAULT : When an agreement is ready to vault <br>,\nAGREEMENT_VAULTED : When an agreement is vaulted <br>,\nAGREEMENT_ACTION_REQUESTED : When an agreement action is requested <br>,\nAGREEMENT_ACTION_REPLACED_SIGNER : When signer is replaced for an agreement <br>,\nAGREEMENT_AUTO_CANCELLED_CONVERSION_PROBLEM : When an agreement is auto-cancelled due to conversion problem <br>,\nAGREEMENT_DOCUMENTS_DELETED : When an agreement documents are deleted <br>,\nAGREEMENT_EMAIL_BOUNCED : When an agreement email gets bounced <br>,\nAGREEMENT_KBA_AUTHENTICATED : When an agreement KBA is authenticated <br>,\nAGREEMENT_OFFLINE_SYNC : When an agreement is synced offline <br>,\nAGREEMENT_USER_ACK_AGREEMENT_MODIFIED : User Acknowledgement when an agreement is modified <br>,\nAGREEMENT_UPLOADED_BY_SENDER : When an agreement is uploaded by sender <br>,\nAGREEMENT_WEB_IDENTITY_AUTHENTICATED : When an agreement web identity is authenticated <br>,\nAGREEMENT_ALL : All the supported agreement events for Webhooks <br>,\nMEGASIGN_CREATED : When a megaSign is created <br>,\nMEGASIGN_RECALLED : When a megaSign is recalled <br>,\nMEGASIGN_SHARED : When a megaSign is shared <br>,\nMEGASIGN_ALL : All the supported megaSign events for Webhooks <br>,\nWIDGET_CREATED : When a web form is created <br>,\nWIDGET_MODIFIED : When a web form is modified <br>,\nWIDGET_SHARED : When a web form is shared <br>,\nWIDGET_ENABLED : When a web form is enabled <br>,\nWIDGET_DISABLED : When a web form is disabled <br>,\nWIDGET_AUTO_CANCELLED_CONVERSION_PROBLEM : When a web form is auto-cancelled due to conversion problem <br>,\nWIDGET_ALL : All the supported web form events for Webhooks <br>,\nLIBRARY_DOCUMENT_CREATED : When a library document  is created <br>,\nLIBRARY_DOCUMENT_AUTO_CANCELLED_CONVERSION_PROBLEM : When a library document is auto-cancelled due to conversion problem <br>,\nLIBRARY_DOCUMENT_MODIFIED : When a library document is modified <br>,\nLIBRARY_DOCUMENT_ALL : All the supported library document  events for Webhooks",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "AGREEMENT_CREATED",
+              "AGREEMENT_ACTION_DELEGATED",
+              "AGREEMENT_RECALLED",
+              "AGREEMENT_REJECTED",
+              "AGREEMENT_EXPIRED",
+              "AGREEMENT_ACTION_COMPLETED",
+              "AGREEMENT_WORKFLOW_COMPLETED",
+              "AGREEMENT_EMAIL_VIEWED",
+              "AGREEMENT_MODIFIED",
+              "AGREEMENT_SHARED",
+              "AGREEMENT_READY_TO_VAULT",
+              "AGREEMENT_VAULTED",
+              "AGREEMENT_ACTION_REQUESTED",
+              "AGREEMENT_ACTION_REPLACED_SIGNER",
+              "AGREEMENT_AUTO_CANCELLED_CONVERSION_PROBLEM",
+              "AGREEMENT_DOCUMENTS_DELETED",
+              "AGREEMENT_EMAIL_BOUNCED",
+              "AGREEMENT_KBA_AUTHENTICATED",
+              "AGREEMENT_OFFLINE_SYNC",
+              "AGREEMENT_USER_ACK_AGREEMENT_MODIFIED",
+              "AGREEMENT_UPLOADED_BY_SENDER",
+              "AGREEMENT_WEB_IDENTITY_AUTHENTICATED",
+              "AGREEMENT_ALL",
+              "MEGASIGN_CREATED",
+              "MEGASIGN_RECALLED",
+              "MEGASIGN_SHARED",
+              "MEGASIGN_ALL",
+              "WIDGET_CREATED",
+              "WIDGET_MODIFIED",
+              "WIDGET_SHARED",
+              "WIDGET_ENABLED",
+              "WIDGET_DISABLED",
+              "WIDGET_AUTO_CANCELLED_CONVERSION_PROBLEM",
+              "WIDGET_ALL",
+              "LIBRARY_DOCUMENT_CREATED",
+              "LIBRARY_DOCUMENT_AUTO_CANCELLED_CONVERSION_PROBLEM",
+              "LIBRARY_DOCUMENT_MODIFIED",
+              "LIBRARY_DOCUMENT_ALL"
             ]
+          },
+          "required": true
+        },
+        "applicationDisplayName": {
+          "description": "The display name of the application through which webhook is created",
+          "type": "string",
+          "required": false
+        },
+        "scope": {
+          "description": "Scope of webhook. Can't be modified in PUT request. The possible values are ACCOUNT, GROUP, USER or RESOURCE",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "ACCOUNT",
+            "GROUP",
+            "USER",
+            "RESOURCE"
+          ]
+        },
+        "name": {
+          "description": "The name of the webhook",
+          "type": "string",
+          "required": true
+        },
+        "id": {
+          "description": "The unique identifier of the webhook. Will only be returned in GET request. Can't be modified in PUT request",
+          "type": "string",
+          "required": false
+        },
+        "lastModified": {
+          "format": "date",
+          "description": "Timestamp when the webhook was last updated. Will only be returned in GET request. Can't be modified in PUT request",
+          "type": "string",
+          "required": false
+        },
+        "state": {
+          "description": "The state in which the webhook should be created",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "ACTIVE"
+          ]
+        },
+        "applicationName": {
+          "description": "The name of the application through which webhook is created",
+          "type": "string",
+          "required": false
+        },
+        "resourceType": {
+          "description": "The resource for which you want to create webhook. Need to specify only if scope is 'RESOURCE'. Can't be modified in PUT request. The possible values are AGREEMENT, WIDGET,  MEGASIGN AND LIBRARY_DOCUMENT",
+          "type": "string",
+          "required": false,
+          "enum": [
+            "AGREEMENT",
+            "WIDGET",
+            "MEGASIGN",
+            "LIBRARY_DOCUMENT"
+          ]
+        },
+        "status": {
+          "description": "Status of the webhook. Determines whether the webhook will be actually triggered. Default: ACTIVE, if ACTIVE, this webhook will receive event requests. If INACTIVE, this webhook will not receive event requests. Can't provide status in POST/PUT requests.",
+          "type": "string",
+          "required": false,
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ]
         }
-        ,{
-            "path":"/webhooks"
-            ,"operations":
-            [
-                {
-                    "httpMethod":"GET"
-                    ,"summary":"Retrieves webhooks for a user."
-                    ,"notes":null
-                    ,"type":"UserWebhooks"
-                    ,"nickname":"getWebhooks"
-                    ,"order":142
-                    ,"produces":
-                    ["application/json"
-                    ]
-                    ,"authorizations":
-                    {
-                        "oauth2":
-                        [
-                            {
-                                "scope":"webhook_read"
-                            }
-                        ]
-                    }
-                    ,"parameters":
-                    [
-                        {
-                            "name":"Authorization"
-                            ,"description":"An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token<\/a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_read')\" oncontextmenu=\"this.href=oauthDoc('webhook_read')\" target=\"oauthDoc\">webhook_read<\/a><\/li><\/ul>in the format <b>'Bearer {accessToken}'."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-api-user"
-                            ,"description":"The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.<\/b> If it is not specified, then the caller is inferred from the token."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-on-behalf-of-user"
-                            ,"description":"The userId or email in the format <b>userid:{userId} OR email:{email}.<\/b> of the user that has shared his/her account"
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"showInActiveWebhooks"
-                            ,"description":"A query parameter to fetch all the inactive webhooks along with the active webhooks."
-                            ,"required":false
-                            ,"type":"boolean"
-                            ,"paramType":"query"
-                        }
-                        ,{
-                            "name":"scope"
-                            ,"description":"Scope of webhook. The possible values are ACCOUNT, GROUP, USER or RESOURCE"
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"query"
-                            ,"enum":["ACCOUNT","GROUP","USER","RESOURCE"]
-                        }
-                        ,{
-                            "name":"resourceType"
-                            ,"description":"The type of resource on which webhook was created. The possible values are AGREEMENT, WIDGET and MEGASIGN."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"query"
-                            ,"enum":["AGREEMENT","WIDGET","MEGASIGN"]
-                        }
-                        ,{
-                            "name":"cursor"
-                            ,"description":"Used to navigate through the pages. If not provided, returns the first page."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"query"
-                        }
-                        ,{
-                            "name":"pageSize"
-                            ,"description":"Number of intended items in the response page."
-                            ,"required":false
-                            ,"type":"integer"
-                            ,"paramType":"query"
-                        }
-                    ]
-                    ,"errorResponses":
-                    [
-                        {
-                            "code":"400"
-                            ,"reason":"BAD_REQUEST: The request provided is invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_ARGUMENTS: One or more arguments to the method are invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_CURSOR: Page cursor provided is invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_PAGE_SIZE: Page size is either invalid or not within permissible range."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_USER: Invalid user ID or email provided in x-user header."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"NO_ACCESS_TOKEN_HEADER: Access token header not provided."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"UNAUTHORIZED: You cannot work on behalf of this user."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"UNVERIFIED_USER: The user has registered but has not verified their email address. The user must use the Adobe Sign web site to complete verification."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"API_TERMS_NOT_ACCEPTED: Your account is locked because an administrator has not agreed to Adobe Sign's Terms of Use. Please contact your account administrator to activate your account."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"PERMISSION_DENIED: The API caller does not have the permission to execute this operation."
-                        }
-                        ,{
-                            "code":"500"
-                            ,"reason":"MISC_SERVER_ERROR: Some miscellaneous error has occurred."
-                        }
-                    ]
-                }
+      }
+    },
+    "WebhookCreationResponse": {
+      "description": "A JSON  that contains the id of the newly created webhook",
+      "id": "WebhookCreationResponse",
+      "properties": {
+        "id": {
+          "description": "An identifier of the webhook resource created",
+          "type": "string",
+          "required": false
+        }
+      }
+    },
+    "UserWebhooks": {
+      "id": "UserWebhooks",
+      "properties": {
+        "userWebhookList": {
+          "description": "An array of web form items",
+          "type": "array",
+          "items": {
+            "$ref": "UserWebhook"
+          },
+          "required": true
+        },
+        "page": {
+          "description": "Pagination information for navigating through the response",
+          "type": "PageInfo",
+          "items": {
+            "$ref": "PageInfo"
+          },
+          "required": true
+        }
+      }
+    },
+    "WebhookStateInfo": {
+      "id": "WebhookStateInfo",
+      "properties": {
+        "state": {
+          "description": "The state to which the webhook should be changed to",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        }
+      }
+    },
+    "WebhookConditionalParams": {
+      "id": "WebhookConditionalParams",
+      "properties": {
+        "webhookWidgetEvents": {
+          "description": "Conditional parameters for webhook web form events",
+          "type": "WebhookWidgetEvents",
+          "items": {
+            "$ref": "WebhookWidgetEvents"
+          },
+          "required": false
+        },
+        "webhookMegaSignEvents": {
+          "description": "Conditional parameters for webhook megasign events",
+          "type": "WebhookMegaSignEvents",
+          "items": {
+            "$ref": "WebhookMegaSignEvents"
+          },
+          "required": false
+        },
+        "webhookLibraryDocumentEvents": {
+          "description": "Conditional parameters for webhook library document events",
+          "type": "WebhookLibraryDocumentEvents",
+          "items": {
+            "$ref": "WebhookLibraryDocumentEvents"
+          },
+          "required": false
+        },
+        "webhookAgreementEvents": {
+          "description": "Conditional parameters for webhook agreement events",
+          "type": "WebhookAgreementEvents",
+          "items": {
+            "$ref": "WebhookAgreementEvents"
+          },
+          "required": false
+        }
+      }
+    },
+    "WebhookLibraryDocumentEvents": {
+      "id": "WebhookLibraryDocumentEvents",
+      "properties": {
+        "includeDetailedInfo": {
+          "description": "Determines whether agreement detailed info will be returned in the response payload",
+          "type": "boolean",
+          "required": false
+        },
+        "includeDocumentsInfo": {
+          "description": "Determines whether document info will be returned in the response payload",
+          "type": "boolean",
+          "required": false
+        }
+      }
+    },
+    "UserWebhook": {
+      "id": "UserWebhook",
+      "properties": {
+        "resourceId": {
+          "description": "Id of the resource type for which you want to create webhook. Provide agreementId if webhook needs to be created for an agreement. Similarly, widgetId if webhook needs to be created for a web form, megaSignId if webhook needs to be created for a megaSign and libraryDocumentId if webhook needs to be created for a library document. Need to specify only if scope is 'RESOURCE'. Can't be modified in PUT request",
+          "type": "string",
+          "required": false
+        },
+        "webhookUrlInfo": {
+          "description": "Info of webhook url",
+          "type": "WebhookUrlInfo",
+          "items": {
+            "$ref": "WebhookUrlInfo"
+          },
+          "required": true
+        },
+        "webhookSubscriptionEvents": {
+          "description": "Determines events for which the webhook is triggered. The possible values are <br> AGREEMENT_CREATED : When an agreement is created <br>,\nAGREEMENT_ACTION_DELEGATED : When an agreement is delegated <br>,\nAGREEMENT_RECALLED : When an agreement is recalled <br>,\nAGREEMENT_REJECTED : When an agreement is rejected <br>,\nAGREEMENT_EXPIRED : When an agreement expires <br>,\nAGREEMENT_ACTION_COMPLETED : When an agreement action is completed <br>,\nAGREEMENT_WORKFLOW_COMPLETED : When an agreement workflow is completed <br>,\nAGREEMENT_EMAIL_VIEWED : When an agreement's email is viewed <br>,\nAGREEMENT_MODIFIED : When an agreement is modified <br>,\nAGREEMENT_SHARED : When an agreement is shared <br>,\nAGREEMENT_READY_TO_VAULT : When an agreement is ready to vault <br>,\nAGREEMENT_VAULTED : When an agreement is vaulted <br>,\nAGREEMENT_ACTION_REQUESTED : When an agreement action is requested <br>,\nAGREEMENT_ACTION_REPLACED_SIGNER : When signer is replaced for an agreement <br>,\nAGREEMENT_AUTO_CANCELLED_CONVERSION_PROBLEM : When an agreement is auto-cancelled due to conversion problem <br>,\nAGREEMENT_DOCUMENTS_DELETED : When an agreement documents are deleted <br>,\nAGREEMENT_EMAIL_BOUNCED : When an agreement email gets bounced <br>,\nAGREEMENT_KBA_AUTHENTICATED : When an agreement KBA is authenticated <br>,\nAGREEMENT_OFFLINE_SYNC : When an agreement is synced offline <br>,\nAGREEMENT_USER_ACK_AGREEMENT_MODIFIED : User Acknowledgement when an agreement is modified <br>,\nAGREEMENT_UPLOADED_BY_SENDER : When an agreement is uploaded by sender <br>,\nAGREEMENT_WEB_IDENTITY_AUTHENTICATED : When an agreement web identity is authenticated <br>,\nAGREEMENT_ALL : All the supported agreement events for Webhooks <br>,\nMEGASIGN_CREATED : When a megaSign is created <br>,\nMEGASIGN_RECALLED : When a megaSign is recalled <br>,\nMEGASIGN_SHARED : When a megaSign is shared <br>,\nMEGASIGN_ALL : All the supported megaSign events for Webhooks <br>,\nWIDGET_CREATED : When a web form is created <br>,\nWIDGET_MODIFIED : When a web form is modified <br>,\nWIDGET_SHARED : When a web form is shared <br>,\nWIDGET_ENABLED : When a web form is enabled <br>,\nWIDGET_DISABLED : When a web form is disabled <br>,\nWIDGET_AUTO_CANCELLED_CONVERSION_PROBLEM : When a web form is auto-cancelled due to conversion problem <br>,\nWIDGET_ALL : All the supported web form events for Webhooks <br>,\nLIBRARY_DOCUMENT_CREATED : When a library document  is created <br>,\nLIBRARY_DOCUMENT_AUTO_CANCELLED_CONVERSION_PROBLEM : When a library document is auto-cancelled due to conversion problem <br>,\nLIBRARY_DOCUMENT_MODIFIED : When a library document is modified <br>,\nLIBRARY_DOCUMENT_ALL : All the supported library document  events for Webhooks",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "AGREEMENT_CREATED",
+              "AGREEMENT_ACTION_DELEGATED",
+              "AGREEMENT_RECALLED",
+              "AGREEMENT_REJECTED",
+              "AGREEMENT_EXPIRED",
+              "AGREEMENT_ACTION_COMPLETED",
+              "AGREEMENT_WORKFLOW_COMPLETED",
+              "AGREEMENT_EMAIL_VIEWED",
+              "AGREEMENT_MODIFIED",
+              "AGREEMENT_SHARED",
+              "AGREEMENT_READY_TO_VAULT",
+              "AGREEMENT_VAULTED",
+              "AGREEMENT_ACTION_REQUESTED",
+              "AGREEMENT_ACTION_REPLACED_SIGNER",
+              "AGREEMENT_AUTO_CANCELLED_CONVERSION_PROBLEM",
+              "AGREEMENT_DOCUMENTS_DELETED",
+              "AGREEMENT_EMAIL_BOUNCED",
+              "AGREEMENT_KBA_AUTHENTICATED",
+              "AGREEMENT_OFFLINE_SYNC",
+              "AGREEMENT_USER_ACK_AGREEMENT_MODIFIED",
+              "AGREEMENT_UPLOADED_BY_SENDER",
+              "AGREEMENT_WEB_IDENTITY_AUTHENTICATED",
+              "AGREEMENT_ALL",
+              "MEGASIGN_CREATED",
+              "MEGASIGN_RECALLED",
+              "MEGASIGN_SHARED",
+              "MEGASIGN_ALL",
+              "WIDGET_CREATED",
+              "WIDGET_MODIFIED",
+              "WIDGET_SHARED",
+              "WIDGET_ENABLED",
+              "WIDGET_DISABLED",
+              "WIDGET_AUTO_CANCELLED_CONVERSION_PROBLEM",
+              "WIDGET_ALL",
+              "LIBRARY_DOCUMENT_CREATED",
+              "LIBRARY_DOCUMENT_AUTO_CANCELLED_CONVERSION_PROBLEM",
+              "LIBRARY_DOCUMENT_MODIFIED",
+              "LIBRARY_DOCUMENT_ALL"
             ]
+          },
+          "required": true
+        },
+        "scope": {
+          "description": "Scope of webhook. Can't be modified in PUT request. The possible values are ACCOUNT, GROUP, USER or RESOURCE",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "ACCOUNT",
+            "GROUP",
+            "USER",
+            "RESOURCE"
+          ]
+        },
+        "name": {
+          "description": "The name of the webhook",
+          "type": "string",
+          "required": true
+        },
+        "id": {
+          "description": "The unique identifier of the webhook. Will only be returned in GET request. Can't be modified in PUT request",
+          "type": "string",
+          "required": true
+        },
+        "lastModified": {
+          "format": "date",
+          "description": "Timestamp when the webhook was last updated. Will only be returned in GET request. Can't be modified in PUT request",
+          "type": "string",
+          "required": false
+        },
+        "applicationDisplayName": {
+          "description": "The display name of the application through which webhook is created",
+          "type": "string",
+          "required": false
+        },
+        "applicationName": {
+          "description": "The name of the application through which webhook is created",
+          "type": "string",
+          "required": false
+        },
+        "resourceType": {
+          "description": "The resource for which you want to create webhook. Need to specify only if scope is 'RESOURCE'. Can't be modified in PUT request. The possible values are AGREEMENT, WIDGET,  MEGASIGN AND LIBRARY_DOCUMENT",
+          "type": "string",
+          "required": false,
+          "enum": [
+            "AGREEMENT",
+            "WIDGET",
+            "MEGASIGN",
+            "LIBRARY_DOCUMENT"
+          ]
+        },
+        "status": {
+          "description": "Status of the webhook. Determines whether the webhook will be actually triggered. Default: ACTIVE, if ACTIVE, this webhook will receive event requests. If INACTIVE, this webhook will not receive event requests. Can't provide status in POST/PUT requests.",
+          "type": "string",
+          "required": false,
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ]
         }
-        ,{
-            "path":"/webhooks/{webhookId}"
-            ,"operations":
-            [
-                {
-                    "httpMethod":"GET"
-                    ,"summary":"Retrieves the details of a webhook."
-                    ,"notes":null
-                    ,"type":"WebhookInfo"
-                    ,"nickname":"getWebhookInfo"
-                    ,"order":143
-                    ,"produces":
-                    ["application/json"
-                    ]
-                    ,"authorizations":
-                    {
-                        "oauth2":
-                        [
-                            {
-                                "scope":"webhook_read"
-                            }
-                        ]
-                    }
-                    ,"parameters":
-                    [
-                        {
-                            "name":"Authorization"
-                            ,"description":"An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token<\/a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_read')\" oncontextmenu=\"this.href=oauthDoc('webhook_read')\" target=\"oauthDoc\">webhook_read<\/a><\/li><\/ul>in the format <b>'Bearer {accessToken}'."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-api-user"
-                            ,"description":"The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.<\/b> If it is not specified, then the caller is inferred from the token."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-on-behalf-of-user"
-                            ,"description":"The userId or email in the format <b>userid:{userId} OR email:{email}.<\/b> of the user that has shared his/her account"
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"If-None-Match"
-                            ,"description":"Pass the value of the e-tag header obtained from the previous response to the same request to get a RESOURCE_NOT_MODIFIED(304) if the resource hasn't changed."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"webhookId"
-                            ,"description":"The webhook identifier, as returned by the webhook creation API or retrieved from the API to fetch webhooks."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"path"
-                        }
-                    ]
-                    ,"errorResponses":
-                    [
-                        {
-                            "code":"304"
-                            ,"reason":"RESOURCE_NOT_MODIFIED: Resource is not modified."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"MISSING_REQUIRED_PARAM: Required parameters are missing."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"NO_AUTHORIZATION_HEADER: Authorization header not provided."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"API_TERMS_NOT_ACCEPTED: Your account is locked because an administrator has not agreed to Adobe Sign's Terms of Use. Please contact your account administrator to activate your account."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"PERMISSION_DENIED: The API caller does not have the permission to execute this operation."
-                        }
-                        ,{
-                            "code":"404"
-                            ,"reason":"INVALID_WEBHOOK_ID: The webhook id specified is invalid."
-                        }
-                        ,{
-                            "code":"500"
-                            ,"reason":"MISC_SERVER_ERROR: Some miscellaneous error has occurred."
-                        }
-                    ]
-                }
-            ]
+      }
+    },
+    "WebhookUrlInfo": {
+      "id": "WebhookUrlInfo",
+      "properties": {
+        "url": {
+          "description": "Info of webhook url",
+          "type": "string",
+          "required": true
         }
-        ,{
-            "path":"/webhooks/{webhookId}"
-            ,"operations":
-            [
-                {
-                    "httpMethod":"PUT"
-                    ,"summary":"Updates a webhook."
-                    ,"notes":null
-                    ,"type":"void"
-                    ,"nickname":"updateWebhook"
-                    ,"order":144
-                    ,"produces":
-                    ["application/json"
-                    ]
-                    ,"authorizations":
-                    {
-                        "oauth2":
-                        [
-                            {
-                                "scope":"webhook_write"
-                            }
-                        ]
-                    }
-                    ,"parameters":
-                    [
-                        {
-                            "name":"Authorization"
-                            ,"description":"An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token<\/a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_write')\" oncontextmenu=\"this.href=oauthDoc('webhook_write')\" target=\"oauthDoc\">webhook_write<\/a><\/li><\/ul>in the format <b>'Bearer {accessToken}'."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-api-user"
-                            ,"description":"The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.<\/b> If it is not specified, then the caller is inferred from the token."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-on-behalf-of-user"
-                            ,"description":"The userId or email in the format <b>userid:{userId} OR email:{email}.<\/b> of the user that has shared his/her account"
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"If-Match"
-                            ,"description":"The server will only update the resource if it matches the listed ETag otherwise error RESOURCE_MODIFIED(412) is returned."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"webhookId"
-                            ,"description":"The webhook identifier, as returned by the webhook creation API or retrieved from the API to fetch webhooks."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"path"
-                        }
-                        ,{
-                            "name":"WebhookInfo"
-                            ,"description":"Information necessary to update a webhook"
-                            ,"required":true
-                            ,"type":"WebhookInfo"
-                            ,"paramType":"body"
-                        }
-                    ]
-                    ,"errorResponses":
-                    [
-                        {
-                            "code":"400"
-                            ,"reason":"BAD_REQUEST: The request provided is invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"DUPLICATE_WEBHOOK_CONFIGURATION: There is already a webhook registered with same configuration."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_JSON: An invalid JSON was specified."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_ON_BEHALF_OF_USER_HEADER: Value provided in x-on-behalf-Of-user header is in invalid format."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_WEBHOOK_CONDITIONAL_PARAMS: The webhook conditional parameters specified are invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_WEBHOOK_SUBSCRIPTION_EVENTS: One or more webhook subscription events specified is invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"MISSING_IF_MATCH_HEADER: If-Match header missing."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"MISSING_REQUIRED_PARAM: Required parameters are missing."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"UPDATE_NOT_ALLOWED: The agreement you are trying to update is not modifiable."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"WEBHOOK_LIMIT_EXCEEDED: Webhook limit for this resource and event has exceeded."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"WEBHOOK_LIMIT_EXCEEDED: Webhook limit for this resource and event has exceeded."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_USER: Invalid user ID or email provided in x-user header."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"NO_AUTHORIZATION_HEADER: Authorization header not provided."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"UNAUTHORIZED: You cannot work on behalf of this user."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"UNVERIFIED_USER: The user has registered but has not verified their email address. The user must use the Adobe Sign web site to complete verification."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"API_TERMS_NOT_ACCEPTED: Your account is locked because an administrator has not agreed to Adobe Sign's Terms of Use. Please contact your account administrator to activate your account."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"PERMISSION_DENIED: The API caller does not have the permission to execute this operation."
-                        }
-                        ,{
-                            "code":"404"
-                            ,"reason":"INVALID_WEBHOOK_ID: The webhook id specified is invalid."
-                        }
-                        ,{
-                            "code":"412"
-                            ,"reason":"RESOURCE_MODIFIED: Resource is already modified with newer version."
-                        }
-                        ,{
-                            "code":"500"
-                            ,"reason":"MISC_SERVER_ERROR: Some miscellaneous error has occurred."
-                        }
-                    ]
-                }
-            ]
+      }
+    },
+    "WebhookWidgetEvents": {
+      "id": "WebhookWidgetEvents",
+      "properties": {
+        "includeDetailedInfo": {
+          "description": "Determines whether agreement detailed info will be returned in the response payload",
+          "type": "boolean",
+          "required": false
+        },
+        "includeParticipantsInfo": {
+          "description": "Determines whether participants info will be returned in the response payload",
+          "type": "boolean",
+          "required": false
+        },
+        "includeDocumentsInfo": {
+          "description": "Determines whether document info will be returned in the response payload",
+          "type": "boolean",
+          "required": false
         }
-        ,{
-            "path":"/webhooks/{webhookId}/state"
-            ,"operations":
-            [
-                {
-                    "httpMethod":"PUT"
-                    ,"summary":"Updates the state of a webhook identified by webhookId in the path."
-                    ,"notes":null
-                    ,"type":"void"
-                    ,"nickname":"updateWebhookState"
-                    ,"order":145
-                    ,"produces":
-                    ["application/json"
-                    ]
-                    ,"authorizations":
-                    {
-                        "oauth2":
-                        [
-                            {
-                                "scope":"webhook_write"
-                            }
-                        ]
-                    }
-                    ,"parameters":
-                    [
-                        {
-                            "name":"Authorization"
-                            ,"description":"An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token<\/a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_write')\" oncontextmenu=\"this.href=oauthDoc('webhook_write')\" target=\"oauthDoc\">webhook_write<\/a><\/li><\/ul>in the format <b>'Bearer {accessToken}'."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-api-user"
-                            ,"description":"The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.<\/b> If it is not specified, then the caller is inferred from the token."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-on-behalf-of-user"
-                            ,"description":"The userId or email in the format <b>userid:{userId} OR email:{email}.<\/b> of the user that has shared his/her account"
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"If-Match"
-                            ,"description":"The server will only update the resource if it matches the listed ETag otherwise error RESOURCE_MODIFIED(412) is returned."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"webhookId"
-                            ,"description":"The webhook identifier, as returned by the webhook creation API or retrieved from the API to fetch webhooks."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"path"
-                        }
-                        ,{
-                            "name":"WebhookStateInfo"
-                            ,"description":""
-                            ,"required":true
-                            ,"type":"WebhookStateInfo"
-                            ,"paramType":"body"
-                        }
-                    ]
-                    ,"errorResponses":
-                    [
-                        {
-                            "code":"400"
-                            ,"reason":"DUPLICATE_WEBHOOK_CONFIGURATION: There is already a webhook registered with same configuration."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_ARGUMENTS: One or more arguments to the method are invalid."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_JSON: An invalid JSON was specified."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_ON_BEHALF_OF_USER_HEADER: Value provided in x-on-behalf-Of-user header is in invalid format."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"MISSING_IF_MATCH_HEADER: If-Match header missing."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"MISSING_REQUIRED_PARAM: Required parameters are missing."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"UPDATE_NOT_ALLOWED: The agreement you are trying to update is not modifiable."
-                        }
-                        ,{
-                            "code":"400"
-                            ,"reason":"WEBHOOK_LIMIT_EXCEEDED: Webhook limit for this resource and event has exceeded."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_USER: Invalid user ID or email provided in x-user header."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"NO_AUTHORIZATION_HEADER: Authorization header not provided."
-                        }
-                        ,{
-                            "code":"403"
-                            ,"reason":"OPERATION_NOT_ALLOWED: Requested Operation is not allowed."
-                        }
-                        ,{
-                            "code":"404"
-                            ,"reason":"INVALID_WEBHOOK_ID: The webhook id specified is invalid."
-                        }
-                        ,{
-                            "code":"412"
-                            ,"reason":"RESOURCE_MODIFIED: Resource is already modified with newer version."
-                        }
-                        ,{
-                            "code":"500"
-                            ,"reason":"MISC_SERVER_ERROR: Some miscellaneous error has occurred."
-                        }
-                    ]
-                }
-            ]
-        }
-        ,{
-            "path":"/webhooks/{webhookId}"
-            ,"operations":
-            [
-                {
-                    "httpMethod":"DELETE"
-                    ,"summary":"Deletes a webhook."
-                    ,"notes":null
-                    ,"type":"void"
-                    ,"nickname":"deleteWebhook"
-                    ,"order":146
-                    ,"produces":
-                    ["application/json"
-                    ]
-                    ,"authorizations":
-                    {
-                        "oauth2":
-                        [
-                            {
-                                "scope":"webhook_retention"
-                            }
-                        ]
-                    }
-                    ,"parameters":
-                    [
-                        {
-                            "name":"Authorization"
-                            ,"description":"An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token<\/a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_retention')\" oncontextmenu=\"this.href=oauthDoc('webhook_retention')\" target=\"oauthDoc\">webhook_retention<\/a><\/li><\/ul>in the format <b>'Bearer {accessToken}'."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-api-user"
-                            ,"description":"The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.<\/b> If it is not specified, then the caller is inferred from the token."
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"x-on-behalf-of-user"
-                            ,"description":"The userId or email in the format <b>userid:{userId} OR email:{email}.<\/b> of the user that has shared his/her account"
-                            ,"required":false
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"If-Match"
-                            ,"description":"The server will only update the resource if it matches the listed ETag otherwise error RESOURCE_MODIFIED(412) is returned."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"header"
-                        }
-                        ,{
-                            "name":"webhookId"
-                            ,"description":"The webhook identifier, as returned by the webhook creation API or retrieved from the API to fetch webhooks."
-                            ,"required":true
-                            ,"type":"string"
-                            ,"paramType":"path"
-                        }
-                    ]
-                    ,"errorResponses":
-                    [
-                        {
-                            "code":"400"
-                            ,"reason":"INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header."
-                        }
-                        ,{
-                            "code":"401"
-                            ,"reason":"NO_AUTHORIZATION_HEADER: Authorization header not provided."
-                        }
-                        ,{
-                            "code":"404"
-                            ,"reason":"INVALID_WEBHOOK_ID: The webhook id specified is invalid."
-                        }
-                        ,{
-                            "code":"500"
-                            ,"reason":"MISC_SERVER_ERROR: Some miscellaneous error has occurred."
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-    ,"models":
-    {
-        "WebhookInfo":
-        {
-            "id":"WebhookInfo"
-            ,"properties":
-            {
-                "applicationDisplayName":
-                {
-                    "required":false
-                    ,"description":"The display name of the application through which webhook is created"
-                    ,"type":"string"
-                }
-                ,"applicationName":
-                {
-                    "required":false
-                    ,"description":"The name of the application through which webhook is created"
-                    ,"type":"string"
-                }
-                ,"created":
-                {
-                    "required":false
-                    ,"description":"Timestamp when the webhook was created. Will only be returned in GET request. Can't be modified in PUT request"
-                    ,"type":"string"
-                    ,"format":"date"
-                }
-                ,"id":
-                {
-                    "required":false
-                    ,"description":"The unique identifier of the webhook. Will only be returned in GET request. Can't be modified in PUT request"
-                    ,"type":"string"
-                }
-                ,"lastModified":
-                {
-                    "required":false
-                    ,"description":"Timestamp when the webhook was last updated. Will only be returned in GET request. Can't be modified in PUT request"
-                    ,"type":"string"
-                    ,"format":"date"
-                }
-                ,"name":
-                {
-                    "required":true
-                    ,"description":"The name of the webhook"
-                    ,"type":"string"
-                }
-                ,"resourceId":
-                {
-                    "required":false
-                    ,"description":"Id of the resource type for which you want to create webhook. Provide agreementId if webhook needs to be created for an agreement. Similarly, widgetId if webhook needs to be created for a widget and megaSignId if webhook needs to be created for a megaSign. Need to specify only if scope is 'RESOURCE'. Can't be modified in PUT request"
-                    ,"type":"string"
-                }
-                ,"resourceType":
-                {
-                    "required":false
-                    ,"description":"The resource for which you want to create webhook. Need to specify only if scope is 'RESOURCE'. Can't be modified in PUT request. The possible values are AGREEMENT, WIDGET and MEGASIGN."
-                    ,"type":"string"
-                    ,"enum":["AGREEMENT","WIDGET","MEGASIGN"]
-                }
-                ,"scope":
-                {
-                    "required":true
-                    ,"description":"Scope of webhook. Can't be modified in PUT request. The possible values are ACCOUNT, GROUP, USER or RESOURCE"
-                    ,"type":"string"
-                    ,"enum":["ACCOUNT","GROUP","USER","RESOURCE"]
-                }
-                ,"state":
-                {
-                    "required":true
-                    ,"description":"The state in which the webhook should be created"
-                    ,"type":"string"
-                    ,"enum":["ACTIVE"]
-                }
-                ,"status":
-                {
-                    "required":false
-                    ,"description":"Status of the webhook. Determines whether the webhook will be actually triggered. Default: ACTIVE, if ACTIVE, this webhook will receive event requests. If INACTIVE, this webhook will not receive event requests. Can't provide status in POST/PUT requests."
-                    ,"type":"string"
-                    ,"enum":["ACTIVE","INACTIVE"]
-                }
-                ,"webhookConditionalParams":
-                {
-                    "required":false
-                    ,"description":"Conditions which webhook creator can specify for the payload while creating or updating a webhook"
-                    ,"type":"WebhookConditionalParams"
-                    ,"items":
-                    {
-                        "$ref":"WebhookConditionalParams"
-                    }
-                }
-                ,"webhookSubscriptionEvents":
-                {
-                    "required":true
-                    ,"description":"Determines events for which the webhook is triggered. The possible values are <br> AGREEMENT_CREATED : When an agreement is created <br>,\nAGREEMENT_ACTION_DELEGATED : When an agreement is delegated <br>,\nAGREEMENT_RECALLED : When an agreement is recalled <br>,\nAGREEMENT_REJECTED : When an agreement is rejected <br>,\nAGREEMENT_EXPIRED : When an agreement expires <br>,\nAGREEMENT_ACTION_COMPLETED : When an agreement action is completed <br>,\nAGREEMENT_WORKFLOW_COMPLETED : When an agreement workflow is completed <br>,\nAGREEMENT_EMAIL_VIEWED : When an agreement's email is viewed <br>,\nAGREEMENT_MODIFIED : When an agreement is modified <br>,\nAGREEMENT_SHARED : When an agreement is shared <br>,\nAGREEMENT_VAULTED : When an agreement is vaulted <br>,\nAGREEMENT_ACTION_REQUESTED : When an agreement action is requested <br>,\nAGREEMENT_ACTION_REPLACED_SIGNER : When signer is replaced for an agreement <br>,\nAGREEMENT_AUTO_CANCELLED_CONVERSION_PROBLEM : When an agreement is auto-cancelled due to conversion problem <br>,\nAGREEMENT_DOCUMENTS_DELETED : When an agreement documents are deleted <br>,\nAGREEMENT_EMAIL_BOUNCED : When an agreement email gets bounced <br>,\nAGREEMENT_KBA_AUTHENTICATED : When an agreement KBA is authenticated <br>,\nAGREEMENT_OFFLINE_SYNC : When an agreement is synced offline <br>,\nAGREEMENT_USER_ACK_AGREEMENT_MODIFIED : User Acknowledgement when an agreement is modified <br>,\nAGREEMENT_UPLOADED_BY_SENDER : When an agreement is uploaded by sender <br>,\nAGREEMENT_WEB_IDENTITY_AUTHENTICATED : When an agreement web identity is authenticated <br>,\nAGREEMENT_ALL : All the supported agreement events for Webhooks <br>,\nMEGASIGN_CREATED : When a megaSign is created <br>,\nMEGASIGN_RECALLED : When a megaSign is recalled <br>,\nMEGASIGN_SHARED : When a megaSign is shared <br>,\nMEGASIGN_ALL : All the supported megaSign events for Webhooks <br>,\nWIDGET_CREATED : When a widget is created <br>,\nWIDGET_MODIFIED : When a widget is modified <br>,\nWIDGET_SHARED : When a widget is shared <br>,\nWIDGET_ENABLED : When a widget is enabled <br>,\nWIDGET_DISABLED : When a widget is disabled <br>,\nWIDGET_AUTO_CANCELLED_CONVERSION_PROBLEM : When a widget is auto-cancelled due to conversion problem <br>,\nWIDGET_ALL : All the supported widget events for Webhooks"
-                    ,"type":"array"
-                    ,"items":
-                    {
-                        "type":"string"
-                        ,"enum":["AGREEMENT_CREATED","AGREEMENT_ACTION_DELEGATED","AGREEMENT_RECALLED","AGREEMENT_REJECTED","AGREEMENT_EXPIRED","AGREEMENT_ACTION_COMPLETED","AGREEMENT_WORKFLOW_COMPLETED","AGREEMENT_EMAIL_VIEWED","AGREEMENT_MODIFIED","AGREEMENT_SHARED","AGREEMENT_VAULTED","AGREEMENT_ACTION_REQUESTED","AGREEMENT_ACTION_REPLACED_SIGNER","AGREEMENT_AUTO_CANCELLED_CONVERSION_PROBLEM","AGREEMENT_DOCUMENTS_DELETED","AGREEMENT_EMAIL_BOUNCED","AGREEMENT_KBA_AUTHENTICATED","AGREEMENT_OFFLINE_SYNC","AGREEMENT_USER_ACK_AGREEMENT_MODIFIED","AGREEMENT_UPLOADED_BY_SENDER","AGREEMENT_WEB_IDENTITY_AUTHENTICATED","AGREEMENT_ALL","MEGASIGN_CREATED","MEGASIGN_RECALLED","MEGASIGN_SHARED","MEGASIGN_ALL","WIDGET_CREATED","WIDGET_MODIFIED","WIDGET_SHARED","WIDGET_ENABLED","WIDGET_DISABLED","WIDGET_AUTO_CANCELLED_CONVERSION_PROBLEM","WIDGET_ALL"]
-                    }
-                }
-                ,"webhookUrlInfo":
-                {
-                    "required":true
-                    ,"description":"Info of webhook url"
-                    ,"type":"WebhookUrlInfo"
-                    ,"items":
-                    {
-                        "$ref":"WebhookUrlInfo"
-                    }
-                }
-            }
-        }
-        ,"WebhookConditionalParams":
-        {
-            "id":"WebhookConditionalParams"
-            ,"properties":
-            {
-                "webhookAgreementEvents":
-                {
-                    "required":false
-                    ,"description":"Conditional parameters for webhook agreement events"
-                    ,"type":"WebhookAgreementEvents"
-                    ,"items":
-                    {
-                        "$ref":"WebhookAgreementEvents"
-                    }
-                }
-                ,"webhookMegaSignEvents":
-                {
-                    "required":false
-                    ,"description":"Conditional parameters for webhook megasign events"
-                    ,"type":"WebhookMegaSignEvents"
-                    ,"items":
-                    {
-                        "$ref":"WebhookMegaSignEvents"
-                    }
-                }
-                ,"webhookWidgetEvents":
-                {
-                    "required":false
-                    ,"description":"Conditional parameters for webhook widget events"
-                    ,"type":"WebhookWidgetEvents"
-                    ,"items":
-                    {
-                        "$ref":"WebhookWidgetEvents"
-                    }
-                }
-            }
-        }
-        ,"WebhookAgreementEvents":
-        {
-            "id":"WebhookAgreementEvents"
-            ,"properties":
-            {
-                "includeDetailedInfo":
-                {
-                    "required":false
-                    ,"description":"Determines whether agreement detailed info will be returned in the response payload"
-                    ,"type":"boolean"
-                }
-                ,"includeDocumentsInfo":
-                {
-                    "required":false
-                    ,"description":"Determines whether document info will be returned in the response payload"
-                    ,"type":"boolean"
-                }
-                ,"includeParticipantsInfo":
-                {
-                    "required":false
-                    ,"description":"Determines whether participants info will be returned in the response payload"
-                    ,"type":"boolean"
-                }
-                ,"includeSignedDocuments":
-                {
-                    "required":false
-                    ,"description":"Determines whether documents will be returned in webhook response payload. If set to true, signed document will be returned in base 64 encoded format in JSON when signing is complete"
-                    ,"type":"boolean"
-                }
-            }
-        }
-        ,"WebhookMegaSignEvents":
-        {
-            "id":"WebhookMegaSignEvents"
-            ,"properties":
-            {
-                "includeDetailedInfo":
-                {
-                    "required":false
-                    ,"description":"Determines whether megaign detailed info will be returned in the response payload"
-                    ,"type":"boolean"
-                }
-            }
-        }
-        ,"WebhookWidgetEvents":
-        {
-            "id":"WebhookWidgetEvents"
-            ,"properties":
-            {
-                "includeDetailedInfo":
-                {
-                    "required":false
-                    ,"description":"Determines whether agreement detailed info will be returned in the response payload"
-                    ,"type":"boolean"
-                }
-                ,"includeDocumentsInfo":
-                {
-                    "required":false
-                    ,"description":"Determines whether document info will be returned in the response payload"
-                    ,"type":"boolean"
-                }
-                ,"includeParticipantsInfo":
-                {
-                    "required":false
-                    ,"description":"Determines whether participants info will be returned in the response payload"
-                    ,"type":"boolean"
-                }
-            }
-        }
-        ,"WebhookUrlInfo":
-        {
-            "id":"WebhookUrlInfo"
-            ,"properties":
-            {
-                "url":
-                {
-                    "required":true
-                    ,"description":"Info of webhook url"
-                    ,"type":"string"
-                }
-            }
-        }
-        ,"WebhookCreationResponse":
-        {
-            "id":"WebhookCreationResponse"
-            ,"description":"A JSON  that contains the id of the newly created webhook"
-            ,"properties":
-            {
-                "id":
-                {
-                    "required":false
-                    ,"description":"An identifier of the webhook resource created"
-                    ,"type":"string"
-                }
-            }
-        }
-        ,"UserWebhooks":
-        {
-            "id":"UserWebhooks"
-            ,"properties":
-            {
-                "page":
-                {
-                    "required":true
-                    ,"description":"Pagination information for navigating through the response"
-                    ,"type":"PageInfo"
-                    ,"items":
-                    {
-                        "$ref":"PageInfo"
-                    }
-                }
-                ,"userWebhookList":
-                {
-                    "required":true
-                    ,"description":"An array of widget items"
-                    ,"type":"array"
-                    ,"items":
-                    {
-                        "$ref":"UserWebhook"
-                    }
-                }
-            }
-        }
-        ,"PageInfo":
-        {
-            "id":"PageInfo"
-            ,"properties":
-            {
-                "nextCursor":
-                {
-                    "required":true
-                    ,"description":"Used to navigate to the next page. If not returned, there are no further pages."
-                    ,"type":"string"
-                }
-            }
-        }
-        ,"UserWebhook":
-        {
-            "id":"UserWebhook"
-            ,"properties":
-            {
-                "applicationDisplayName":
-                {
-                    "required":false
-                    ,"description":"The display name of the application through which webhook is created"
-                    ,"type":"string"
-                }
-                ,"applicationName":
-                {
-                    "required":false
-                    ,"description":"The name of the application through which webhook is created"
-                    ,"type":"string"
-                }
-                ,"id":
-                {
-                    "required":true
-                    ,"description":"The unique identifier of the webhook. Will only be returned in GET request. Can't be modified in PUT request"
-                    ,"type":"string"
-                }
-                ,"lastModified":
-                {
-                    "required":false
-                    ,"description":"Timestamp when the webhook was last updated. Will only be returned in GET request. Can't be modified in PUT request"
-                    ,"type":"string"
-                    ,"format":"date"
-                }
-                ,"name":
-                {
-                    "required":true
-                    ,"description":"The name of the webhook"
-                    ,"type":"string"
-                }
-                ,"resourceId":
-                {
-                    "required":false
-                    ,"description":"Id of the resource type for which you want to create webhook. Provide agreementId if webhook needs to be created for an agreement. Similarly, widgetId if webhook needs to be created for a widget and megaSignId if webhook needs to be created for a megaSign. Need to specify only if scope is 'RESOURCE'. Can't be modified in PUT request"
-                    ,"type":"string"
-                }
-                ,"resourceType":
-                {
-                    "required":false
-                    ,"description":"The resource for which you want to create webhook. Need to specify only if scope is 'RESOURCE'. Can't be modified in PUT request. The possible values are AGREEMENT, WIDGET and MEGASIGN."
-                    ,"type":"string"
-                    ,"enum":["AGREEMENT","WIDGET","MEGASIGN"]
-                }
-                ,"scope":
-                {
-                    "required":true
-                    ,"description":"Scope of webhook. Can't be modified in PUT request. The possible values are ACCOUNT, GROUP, USER or RESOURCE"
-                    ,"type":"string"
-                    ,"enum":["ACCOUNT","GROUP","USER","RESOURCE"]
-                }
-                ,"status":
-                {
-                    "required":false
-                    ,"description":"Status of the webhook. Determines whether the webhook will be actually triggered. Default: ACTIVE, if ACTIVE, this webhook will receive event requests. If INACTIVE, this webhook will not receive event requests. Can't provide status in POST/PUT requests."
-                    ,"type":"string"
-                    ,"enum":["ACTIVE","INACTIVE"]
-                }
-                ,"webhookSubscriptionEvents":
-                {
-                    "required":true
-                    ,"description":"Determines events for which the webhook is triggered. The possible values are <br> AGREEMENT_CREATED : When an agreement is created <br>,\nAGREEMENT_ACTION_DELEGATED : When an agreement is delegated <br>,\nAGREEMENT_RECALLED : When an agreement is recalled <br>,\nAGREEMENT_REJECTED : When an agreement is rejected <br>,\nAGREEMENT_EXPIRED : When an agreement expires <br>,\nAGREEMENT_ACTION_COMPLETED : When an agreement action is completed <br>,\nAGREEMENT_WORKFLOW_COMPLETED : When an agreement workflow is completed <br>,\nAGREEMENT_EMAIL_VIEWED : When an agreement's email is viewed <br>,\nAGREEMENT_MODIFIED : When an agreement is modified <br>,\nAGREEMENT_SHARED : When an agreement is shared <br>,\nAGREEMENT_VAULTED : When an agreement is vaulted <br>,\nAGREEMENT_ACTION_REQUESTED : When an agreement action is requested <br>,\nAGREEMENT_ACTION_REPLACED_SIGNER : When signer is replaced for an agreement <br>,\nAGREEMENT_AUTO_CANCELLED_CONVERSION_PROBLEM : When an agreement is auto-cancelled due to conversion problem <br>,\nAGREEMENT_DOCUMENTS_DELETED : When an agreement documents are deleted <br>,\nAGREEMENT_EMAIL_BOUNCED : When an agreement email gets bounced <br>,\nAGREEMENT_KBA_AUTHENTICATED : When an agreement KBA is authenticated <br>,\nAGREEMENT_OFFLINE_SYNC : When an agreement is synced offline <br>,\nAGREEMENT_USER_ACK_AGREEMENT_MODIFIED : User Acknowledgement when an agreement is modified <br>,\nAGREEMENT_UPLOADED_BY_SENDER : When an agreement is uploaded by sender <br>,\nAGREEMENT_WEB_IDENTITY_AUTHENTICATED : When an agreement web identity is authenticated <br>,\nAGREEMENT_ALL : All the supported agreement events for Webhooks <br>,\nMEGASIGN_CREATED : When a megaSign is created <br>,\nMEGASIGN_RECALLED : When a megaSign is recalled <br>,\nMEGASIGN_SHARED : When a megaSign is shared <br>,\nMEGASIGN_ALL : All the supported megaSign events for Webhooks <br>,\nWIDGET_CREATED : When a widget is created <br>,\nWIDGET_MODIFIED : When a widget is modified <br>,\nWIDGET_SHARED : When a widget is shared <br>,\nWIDGET_ENABLED : When a widget is enabled <br>,\nWIDGET_DISABLED : When a widget is disabled <br>,\nWIDGET_AUTO_CANCELLED_CONVERSION_PROBLEM : When a widget is auto-cancelled due to conversion problem <br>,\nWIDGET_ALL : All the supported widget events for Webhooks"
-                    ,"type":"array"
-                    ,"items":
-                    {
-                        "type":"string"
-                        ,"enum":["AGREEMENT_CREATED","AGREEMENT_ACTION_DELEGATED","AGREEMENT_RECALLED","AGREEMENT_REJECTED","AGREEMENT_EXPIRED","AGREEMENT_ACTION_COMPLETED","AGREEMENT_WORKFLOW_COMPLETED","AGREEMENT_EMAIL_VIEWED","AGREEMENT_MODIFIED","AGREEMENT_SHARED","AGREEMENT_VAULTED","AGREEMENT_ACTION_REQUESTED","AGREEMENT_ACTION_REPLACED_SIGNER","AGREEMENT_AUTO_CANCELLED_CONVERSION_PROBLEM","AGREEMENT_DOCUMENTS_DELETED","AGREEMENT_EMAIL_BOUNCED","AGREEMENT_KBA_AUTHENTICATED","AGREEMENT_OFFLINE_SYNC","AGREEMENT_USER_ACK_AGREEMENT_MODIFIED","AGREEMENT_UPLOADED_BY_SENDER","AGREEMENT_WEB_IDENTITY_AUTHENTICATED","AGREEMENT_ALL","MEGASIGN_CREATED","MEGASIGN_RECALLED","MEGASIGN_SHARED","MEGASIGN_ALL","WIDGET_CREATED","WIDGET_MODIFIED","WIDGET_SHARED","WIDGET_ENABLED","WIDGET_DISABLED","WIDGET_AUTO_CANCELLED_CONVERSION_PROBLEM","WIDGET_ALL"]
-                    }
-                }
-                ,"webhookUrlInfo":
-                {
-                    "required":true
-                    ,"description":"Info of webhook url"
-                    ,"type":"WebhookUrlInfo"
-                    ,"items":
-                    {
-                        "$ref":"WebhookUrlInfo"
-                    }
-                }
-            }
-        }
-        ,"WebhookStateInfo":
-        {
-            "id":"WebhookStateInfo"
-            ,"properties":
-            {
-                "state":
-                {
-                    "required":true
-                    ,"description":"The state to which the webhook should be changed to"
-                    ,"type":"string"
-                    ,"enum":["ACTIVE","INACTIVE"]
-                }
-            }
-        }
+      }
     }
+  },
+  "apiVersion": "6.0.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://secure.au1.echosign.com/api/rest/v6",
+  "apis": [
+    {
+      "path": "/webhooks",
+      "operations": [
+        {
+          "summary": "Creates a webhook.",
+          "notes": "This is a primary endpoint which is used to create a new webhook. A webhook can only be created in ACTIVE state. Currently, webhooks are supported at four scopes - Account, Group, User and Resource. <br/> <br/> Before creating a webhook successfully at any of these scopes, Adobe Sign <a href='https://www.adobe.io/apis/documentcloud/sign/docs.html#!adobedocs/adobe-sign/master/webhooks.md#verificationofintentofthewebhookurl'>verifies</a> that the webhook URL that is provided in the registration request really intends to receive notifications and is a valid URL. <br/>There is a defined mechanism for this validation where Adobe Sign makes an HTTPS GET request to the webhook URL. This request has a custom HTTP header X-AdobeSign-ClientId. The value of this header is the client ID of the application that is requesting to create the webhook. To register a webhook successfully, the webhook URL must respond to this verification request with an HTTPS 2XX response code, and also it must send back the same client ID value in one of the following two ways:<ol><li>In a custom response header, X-AdobeSign-ClientId. This is the same header which was passed in the request, and can be echoed back in the response.</li><li> In the JSON response body of the response with the key of xAdobeSignClientId and its value being the same client ID that was sent in the request. </li></ol><p>On successful registration,  Adobe Sign sends a success response (any HTTPS 2XX code) to your client app with the unique webhook identifier and a Location header, which contains the URL of the webhook resource created in Adobe Sign.<br/> To learn more, please refer <a href='https://www.adobe.io/apis/documentcloud/sign/docs.html#!adobedocs/adobe-sign/master/webhooks.md'>Webhooks in Adobe Sign Guide</a>.</p>",
+          "nickname": "createWebhook",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "webhook_write"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "BAD_REQUEST: The request provided is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "DUPLICATE_WEBHOOK_CONFIGURATION: There is already a webhook registered with same configuration.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ARGUMENTS: One or more arguments to the method are invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_JSON: An invalid JSON was specified.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_CONDITIONAL_PARAMS: The webhook conditional parameters specified are invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_RESOURCE_ID: The resource id specified is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_RESOURCE_TYPE: The resource type specified is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_STATE: The webhook state specified is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_SUBSCRIPTION_EVENTS: One or more webhook subscription events specified is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_URL: The webhook url specified is invalid. Please provide a well-formatted https based url.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "MISSING_REQUIRED_PARAM: Required parameters are missing.",
+              "code": "400"
+            },
+            {
+              "reason": "WEBHOOK_LIMIT_EXCEEDED: Webhook limit for this resource and event has exceeded.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_USER: Invalid user ID or email provided in x-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_AUTHORIZATION_HEADER: Authorization header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "UNAUTHORIZED: You cannot work on behalf of this user.",
+              "code": "401"
+            },
+            {
+              "reason": "UNVERIFIED_USER: The user has registered but has not verified their email address. The user must use the Adobe Sign web site to complete verification.",
+              "code": "401"
+            },
+            {
+              "reason": "API_TERMS_NOT_ACCEPTED: Your account is locked because an administrator has not agreed to Adobe Sign's Terms of Use. Please contact your account administrator to activate your account.",
+              "code": "403"
+            },
+            {
+              "reason": "PERMISSION_DENIED: The API caller does not have the permission to execute this operation.",
+              "code": "403"
+            },
+            {
+              "reason": "WEBHOOK_CREATION_NOT_ALLOWED: Webhook creation is not allowed.",
+              "code": "403"
+            },
+            {
+              "reason": "MISC_SERVER_ERROR: Some miscellaneous error has occurred.",
+              "code": "500"
+            }
+          ],
+          "httpMethod": "POST",
+          "type": "WebhookCreationResponse",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_write')\" oncontextmenu=\"this.href=oauthDoc('webhook_write')\" target=\"oauthDoc\">webhook_write</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "x-on-behalf-of-user",
+              "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "body",
+              "name": "WebhookInfo",
+              "description": "Information about the webhook that you want to create",
+              "type": "WebhookInfo",
+              "required": true
+            }
+          ],
+          "order": 168
+        }
+      ]
+    },
+    {
+      "path": "/webhooks",
+      "operations": [
+        {
+          "summary": "Retrieves webhooks for a user.",
+          "notes": null,
+          "nickname": "getWebhooks",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "webhook_read"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "BAD_REQUEST: The request provided is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ARGUMENTS: One or more arguments to the method are invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_CURSOR: Page cursor provided is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_PAGE_SIZE: Page size is either invalid or not within permissible range.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_USER: Invalid user ID or email provided in x-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_ACCESS_TOKEN_HEADER: Access token header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "UNAUTHORIZED: You cannot work on behalf of this user.",
+              "code": "401"
+            },
+            {
+              "reason": "UNVERIFIED_USER: The user has registered but has not verified their email address. The user must use the Adobe Sign web site to complete verification.",
+              "code": "401"
+            },
+            {
+              "reason": "API_TERMS_NOT_ACCEPTED: Your account is locked because an administrator has not agreed to Adobe Sign's Terms of Use. Please contact your account administrator to activate your account.",
+              "code": "403"
+            },
+            {
+              "reason": "PERMISSION_DENIED: The API caller does not have the permission to execute this operation.",
+              "code": "403"
+            },
+            {
+              "reason": "MISC_SERVER_ERROR: Some miscellaneous error has occurred.",
+              "code": "500"
+            }
+          ],
+          "httpMethod": "GET",
+          "type": "UserWebhooks",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_read')\" oncontextmenu=\"this.href=oauthDoc('webhook_read')\" target=\"oauthDoc\">webhook_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "x-on-behalf-of-user",
+              "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "showInActiveWebhooks",
+              "description": "A query parameter to fetch all the inactive webhooks along with the active webhooks.",
+              "type": "boolean",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "scope",
+              "description": "Scope of webhook. The possible values are ACCOUNT, GROUP, USER or RESOURCE",
+              "type": "string",
+              "required": false,
+              "enum": [
+                "ACCOUNT",
+                "GROUP",
+                "USER",
+                "RESOURCE"
+              ]
+            },
+            {
+              "paramType": "query",
+              "name": "resourceType",
+              "description": "The type of resource on which webhook was created. The possible values are AGREEMENT, WIDGET, MEGASIGN and LIBRARY_DOCUMENT.",
+              "type": "string",
+              "required": false,
+              "enum": [
+                "AGREEMENT",
+                "WIDGET",
+                "MEGASIGN",
+                "LIBRARY_DOCUMENT"
+              ]
+            },
+            {
+              "paramType": "query",
+              "name": "cursor",
+              "description": "Used to navigate through the pages. If not provided, returns the first page.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "pageSize",
+              "description": "Number of intended items in the response page. If not provided, it is decided by the application settings.",
+              "type": "integer",
+              "required": false
+            }
+          ],
+          "order": 170
+        }
+      ]
+    },
+    {
+      "path": "/webhooks/{webhookId}",
+      "operations": [
+        {
+          "summary": "Retrieves the details of a webhook.",
+          "notes": null,
+          "nickname": "getWebhookInfo",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "webhook_read"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "RESOURCE_NOT_MODIFIED: Resource is not modified.",
+              "code": "304"
+            },
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "MISSING_REQUIRED_PARAM: Required parameters are missing.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_AUTHORIZATION_HEADER: Authorization header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "API_TERMS_NOT_ACCEPTED: Your account is locked because an administrator has not agreed to Adobe Sign's Terms of Use. Please contact your account administrator to activate your account.",
+              "code": "403"
+            },
+            {
+              "reason": "PERMISSION_DENIED: The API caller does not have the permission to execute this operation.",
+              "code": "403"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_ID: The webhook id specified is invalid.",
+              "code": "404"
+            },
+            {
+              "reason": "MISC_SERVER_ERROR: Some miscellaneous error has occurred.",
+              "code": "500"
+            }
+          ],
+          "httpMethod": "GET",
+          "type": "WebhookInfo",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_read')\" oncontextmenu=\"this.href=oauthDoc('webhook_read')\" target=\"oauthDoc\">webhook_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "x-on-behalf-of-user",
+              "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "If-None-Match",
+              "description": "Pass the value of the e-tag header obtained from the previous response to the same request to get a RESOURCE_NOT_MODIFIED(304) if the resource hasn't changed.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "path",
+              "name": "webhookId",
+              "description": "The webhook identifier, as returned by the webhook creation API or retrieved from the API to fetch webhooks.",
+              "type": "string",
+              "required": true
+            }
+          ],
+          "order": 171
+        }
+      ]
+    },
+    {
+      "path": "/webhooks/{webhookId}",
+      "operations": [
+        {
+          "summary": "Updates a webhook.",
+          "notes": null,
+          "nickname": "updateWebhook",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "webhook_write"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "BAD_REQUEST: The request provided is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "DUPLICATE_WEBHOOK_CONFIGURATION: There is already a webhook registered with same configuration.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_JSON: An invalid JSON was specified.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER_HEADER: Value provided in x-on-behalf-Of-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_CONDITIONAL_PARAMS: The webhook conditional parameters specified are invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_SUBSCRIPTION_EVENTS: One or more webhook subscription events specified is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "MISSING_REQUIRED_PARAM: Required parameters are missing.",
+              "code": "400"
+            },
+            {
+              "reason": "UPDATE_NOT_ALLOWED: The agreement you are trying to update is not modifiable.",
+              "code": "400"
+            },
+            {
+              "reason": "WEBHOOK_LIMIT_EXCEEDED: Webhook limit for this resource and event has exceeded.",
+              "code": "400"
+            },
+            {
+              "reason": "WEBHOOK_LIMIT_EXCEEDED: Webhook limit for this resource and event has exceeded.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_USER: Invalid user ID or email provided in x-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_AUTHORIZATION_HEADER: Authorization header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "UNAUTHORIZED: You cannot work on behalf of this user.",
+              "code": "401"
+            },
+            {
+              "reason": "UNVERIFIED_USER: The user has registered but has not verified their email address. The user must use the Adobe Sign web site to complete verification.",
+              "code": "401"
+            },
+            {
+              "reason": "API_TERMS_NOT_ACCEPTED: Your account is locked because an administrator has not agreed to Adobe Sign's Terms of Use. Please contact your account administrator to activate your account.",
+              "code": "403"
+            },
+            {
+              "reason": "PERMISSION_DENIED: The API caller does not have the permission to execute this operation.",
+              "code": "403"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_ID: The webhook id specified is invalid.",
+              "code": "404"
+            },
+            {
+              "reason": "RESOURCE_MODIFIED: Resource is already modified with newer version.",
+              "code": "412"
+            },
+            {
+              "reason": "MISC_SERVER_ERROR: Some miscellaneous error has occurred.",
+              "code": "500"
+            }
+          ],
+          "httpMethod": "PUT",
+          "type": "void",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_write')\" oncontextmenu=\"this.href=oauthDoc('webhook_write')\" target=\"oauthDoc\">webhook_write</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "x-on-behalf-of-user",
+              "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "If-Match",
+              "description": "The server will only update the resource if it matches the listed ETag otherwise error RESOURCE_MODIFIED(412) is returned.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "path",
+              "name": "webhookId",
+              "description": "The webhook identifier, as returned by the webhook creation API or retrieved from the API to fetch webhooks.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "body",
+              "name": "WebhookInfo",
+              "description": "Information necessary to update a webhook",
+              "type": "WebhookInfo",
+              "required": true
+            }
+          ],
+          "order": 172
+        }
+      ]
+    },
+    {
+      "path": "/webhooks/{webhookId}/state",
+      "operations": [
+        {
+          "summary": "Updates the state of a webhook identified by webhookId in the path.",
+          "notes": null,
+          "nickname": "updateWebhookState",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "webhook_write"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "DUPLICATE_WEBHOOK_CONFIGURATION: There is already a webhook registered with same configuration.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ARGUMENTS: One or more arguments to the method are invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_JSON: An invalid JSON was specified.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER_HEADER: Value provided in x-on-behalf-Of-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "MISSING_REQUIRED_PARAM: Required parameters are missing.",
+              "code": "400"
+            },
+            {
+              "reason": "UPDATE_NOT_ALLOWED: The agreement you are trying to update is not modifiable.",
+              "code": "400"
+            },
+            {
+              "reason": "WEBHOOK_LIMIT_EXCEEDED: Webhook limit for this resource and event has exceeded.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_USER: Invalid user ID or email provided in x-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_AUTHORIZATION_HEADER: Authorization header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "OPERATION_NOT_ALLOWED: Requested Operation is not allowed.",
+              "code": "403"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_ID: The webhook id specified is invalid.",
+              "code": "404"
+            },
+            {
+              "reason": "RESOURCE_MODIFIED: Resource is already modified with newer version.",
+              "code": "412"
+            },
+            {
+              "reason": "MISC_SERVER_ERROR: Some miscellaneous error has occurred.",
+              "code": "500"
+            }
+          ],
+          "httpMethod": "PUT",
+          "type": "void",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_write')\" oncontextmenu=\"this.href=oauthDoc('webhook_write')\" target=\"oauthDoc\">webhook_write</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "x-on-behalf-of-user",
+              "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "If-Match",
+              "description": "The server will only update the resource if it matches the listed ETag otherwise error RESOURCE_MODIFIED(412) is returned.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "path",
+              "name": "webhookId",
+              "description": "The webhook identifier, as returned by the webhook creation API or retrieved from the API to fetch webhooks.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "body",
+              "name": "WebhookStateInfo",
+              "description": "",
+              "type": "WebhookStateInfo",
+              "required": true
+            }
+          ],
+          "order": 173
+        }
+      ]
+    },
+    {
+      "path": "/webhooks/{webhookId}",
+      "operations": [
+        {
+          "summary": "Deletes a webhook.",
+          "notes": null,
+          "nickname": "deleteWebhook",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "webhook_retention"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_AUTHORIZATION_HEADER: Authorization header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_WEBHOOK_ID: The webhook id specified is invalid.",
+              "code": "404"
+            },
+            {
+              "reason": "MISC_SERVER_ERROR: Some miscellaneous error has occurred.",
+              "code": "500"
+            }
+          ],
+          "httpMethod": "DELETE",
+          "type": "void",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('webhook_retention')\" oncontextmenu=\"this.href=oauthDoc('webhook_retention')\" target=\"oauthDoc\">webhook_retention</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "x-on-behalf-of-user",
+              "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "If-Match",
+              "description": "The server will only update the resource if it matches the listed ETag otherwise error RESOURCE_MODIFIED(412) is returned.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "path",
+              "name": "webhookId",
+              "description": "The webhook identifier, as returned by the webhook creation API or retrieved from the API to fetch webhooks.",
+              "type": "string",
+              "required": true
+            }
+          ],
+          "order": 174
+        }
+      ]
+    }
+  ],
+  "resourcePath": "/webhooks",
+  "produces": [
+    "application/json"
+  ]
 }

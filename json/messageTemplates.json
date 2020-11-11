@@ -1,0 +1,203 @@
+{
+  "models": {
+    "MessageTemplate": {
+      "description": "Message template item",
+      "id": "MessageTemplate",
+      "properties": {
+        "name": {
+          "description": "Message template name",
+          "type": "string",
+          "required": true
+        },
+        "messageTemplateId": {
+          "description": "Unique identifier of the message template",
+          "type": "string",
+          "required": true
+        },
+        "text": {
+          "description": "Message template text",
+          "type": "string",
+          "required": true
+        },
+        "locale": {
+          "description": "Message template locale",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "PageInfo": {
+      "id": "PageInfo",
+      "properties": {
+        "nextCursor": {
+          "description": "Used to navigate to the next page. If not returned, there are no further pages.",
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "MessageTemplates": {
+      "description": "List of message templates",
+      "id": "MessageTemplates",
+      "properties": {
+        "messageTemplateList": {
+          "description": "An array of message template items",
+          "type": "array",
+          "items": {
+            "$ref": "MessageTemplate"
+          },
+          "required": true
+        },
+        "page": {
+          "description": "Pagination information for navigating through the response",
+          "type": "PageInfo",
+          "items": {
+            "$ref": "PageInfo"
+          },
+          "required": true
+        }
+      }
+    }
+  },
+  "apiVersion": "6.0.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://secure.au1.echosign.com/api/rest/v6",
+  "apis": [
+    {
+      "path": "/messageTemplates",
+      "operations": [
+        {
+          "summary": "Retrieves a list of message templates applicable to the current user.",
+          "notes": null,
+          "nickname": "getMessageTemplates",
+          "produces": [
+            "application/json"
+          ],
+          "authorizations": {
+            "oauth2": [
+              {
+                "scope": "user_read"
+              }
+            ]
+          },
+          "errorResponses": [
+            {
+              "reason": "INVALID_CURSOR: Page cursor provided is invalid.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_LOCALE: Locale is either invalid or missing.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER_HEADER: Value provided in x-on-behalf-Of-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_PAGE_SIZE: Page size is either invalid or not within permissible range.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_X_API_USER_HEADER: Value provided in x-api-user header is in invalid format.",
+              "code": "400"
+            },
+            {
+              "reason": "MISC_ERROR: Some miscellaneous error has occurred.",
+              "code": "400"
+            },
+            {
+              "reason": "INVALID_ACCESS_TOKEN: Access token provided is invalid or has expired.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_ON_BEHALF_OF_USER: Invalid user ID or email provided in x-on-behalf-of-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "INVALID_USER: Invalid user ID or email provided in x-user header.",
+              "code": "401"
+            },
+            {
+              "reason": "NO_AUTHORIZATION_HEADER: Authorization header not provided.",
+              "code": "401"
+            },
+            {
+              "reason": "MESSAGE_TEMPLATES_NOT_ENABLED: Message templates are not enabled for this user.",
+              "code": "403"
+            },
+            {
+              "reason": "NOT_IN_ACCOUNT: The API user must be inside an account in order to use group management methods.",
+              "code": "403"
+            },
+            {
+              "reason": "PERMISSION_DENIED: The API caller does not have the permission to execute this operation.",
+              "code": "403"
+            },
+            {
+              "reason": "INVALID_GROUP_ID_FOR_USER: Specified group is invalid or user is not a member.",
+              "code": "405"
+            }
+          ],
+          "httpMethod": "GET",
+          "type": "MessageTemplates",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "description": "An <a href=\"#\" onclick=\"this.href=oauthDoc()\" oncontextmenu=\"this.href=oauthDoc()\" target=\"oauthDoc\">OAuth Access Token</a> with scopes:<ul><li style='list-style-type: square'><a href=\"#\" onclick=\"this.href=oauthDoc('user_read')\" oncontextmenu=\"this.href=oauthDoc('user_read')\" target=\"oauthDoc\">user_read</a></li></ul>in the format <b>'Bearer {accessToken}'.",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "x-api-user",
+              "description": "The userId or email of API caller using the account or group token in the format <b>userid:{userId} OR email:{email}.</b> If it is not specified, then the caller is inferred from the token.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "x-on-behalf-of-user",
+              "description": "The userId or email in the format <b>userid:{userId} OR email:{email}.</b> of the user that has shared his/her account",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "locale",
+              "description": "Message template locale",
+              "type": "string",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "groupId",
+              "description": "The group identifier, as returned by the group creation API or retrieved from the API to fetch groups.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "cursor",
+              "description": "Used to navigate through the pages. If not provided, returns the first page.",
+              "type": "string",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "pageSize",
+              "description": "Number of intended items in the response page. If not provided, it is decided by the application settings.",
+              "type": "integer",
+              "required": false
+            }
+          ],
+          "order": 224
+        }
+      ]
+    }
+  ],
+  "resourcePath": "/messageTemplates",
+  "produces": [
+    "application/json"
+  ]
+}

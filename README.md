@@ -56,7 +56,8 @@ You can also sync the git repo on your local machine.
     -l java \
     -o /var/tmp/AdobeSignJavaSdk \
     -DdateLibrary=legacy \
-    --http-user-agent=AdobeSign_JavaSdk_1_0
+    --http-user-agent=AdobeSign_JavaSdk_1_0 \
+    --model-package="io.swagger.client.model.agreements"
     ``` 
     (if you're on Windows, replace the last command with `java -jar modules\swagger-codegen-cli\target\swagger-codegen-cli.jar generate -i json\agreements.json -l java -o c:\temp\AdobeSignJavaSdk -DdateLibrary=legacy --http-user-agent=AdobeSign_JavaSdk_1_0`)
 
